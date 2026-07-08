@@ -38,7 +38,7 @@ pkg/           — 内部包（cachex、ionet）
 web/             — 前端主题容器
  web/default/   — 默认前端（React 19、Rsbuild、Base UI、Tailwind）
   web/classic/   — 经典前端（React 18、Vite、Semi Design）
-  web/default/src/i18n/ — 前端国际化（i18next，zh/en/fr/ru/ja/vi）
+  web/default/src/i18n/ — 前端国际化（i18next，zh/en）
 ```
 
 ## 国际化（i18n）
@@ -49,7 +49,7 @@ web/             — 前端主题容器
 
 ### 前端（`web/default/src/i18n/`）
 - 库：`i18next` + `react-i18next` + `i18next-browser-languagedetector`
-- 语言：en（基础）、zh（fallback）、fr、ru、ja、vi
+- 语言：en、zh
 - 翻译文件：`web/default/src/i18n/locales/{lang}.json`，扁平 JSON，key 使用英文源字符串
 - 用法：使用 `useTranslation()` hook，在组件中调用 `t('English key')`
 - CLI 工具：`bun run i18n:sync`（在 `web/default/` 下执行）

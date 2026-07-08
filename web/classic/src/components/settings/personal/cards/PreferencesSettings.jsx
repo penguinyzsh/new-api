@@ -27,20 +27,15 @@ import { normalizeLanguage } from "../../../../i18n/language";
 
 // Language options with native names
 const languageOptions = [
-	{ value: "zh-CN", label: "简体中文" },
-	{ value: "zh-TW", label: "繁體中文" },
+	{ value: "zh", label: "简体中文" },
 	{ value: "en", label: "English" },
-	{ value: 'fr', label: 'Français'},
-	{ value: 'ru', label: 'Русский'},
-	{ value: 'ja', label: '日本語'},
-	{ value: "vi", label: "Tiếng Việt" },
 ];
 
 const PreferencesSettings = ({ t }) => {
 	const { i18n } = useTranslation();
 	const [userState, userDispatch] = useContext(UserContext);
 	const [currentLanguage, setCurrentLanguage] = useState(
-		normalizeLanguage(i18n.language) || "zh-CN",
+		normalizeLanguage(i18n.language) || "zh",
 	);
 	const [loading, setLoading] = useState(false);
 

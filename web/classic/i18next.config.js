@@ -19,7 +19,7 @@ For commercial licensing, please contact support@quantumnous.com
 
 /** @type {import('i18next-cli').I18nextToolkitConfig} */
 export default {
-  locales: ['zh-CN', 'zh-TW', 'en', 'fr', 'ru', 'ja', 'vi'],
+  locales: ['zh', 'en'],
   extract: {
     input: ['src/**/*.{js,jsx,ts,tsx}'],
     ignore: ['src/i18n/**/*'],

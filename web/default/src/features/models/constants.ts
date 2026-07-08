@@ -177,7 +177,6 @@ export function getSyncLocaleOptions(t: TFunction) {
   return [
     { label: t('Chinese'), value: 'zh' },
     { label: t('English'), value: 'en' },
-    { label: t('Japanese'), value: 'ja' },
   ] as const
 }
 

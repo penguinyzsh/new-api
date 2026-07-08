@@ -26,7 +26,7 @@ function saveAndOpenErrorLog() {
     
     // 写入日志
     const logContent = `New API 崩溃日志
-生成时间: ${new Date().toLocaleString('zh-CN')}
+生成时间: ${new Date().toLocaleString('zh')}
 平台: ${process.platform}
 架构: ${process.arch}
 应用版本: ${app.getVersion()}
