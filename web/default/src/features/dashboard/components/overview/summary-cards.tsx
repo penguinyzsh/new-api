@@ -211,6 +211,18 @@ export function SummaryCards() {
   const runwayDays = getRunwayDays(remainQuota, recentUsage)
 
   const todayUsageDisplay = formatQuota(recentUsage)
+  let runwayDisplay = t('No recent usage')
+  if (runwayDays !== null) {
+    if (runwayDays < 1) {
+      runwayDisplay = t('Less than 1 day left')
+    } else if (runwayDays > 999) {
+      runwayDisplay = `999+ ${t('days')}`
+    } else {
+      runwayDisplay = `~${formatNumber(Math.floor(runwayDays))} ${t('days')}`
+    }
+  } else if (remainQuota <= 0) {
+    runwayDisplay = t('Balance depleted')
+  }
 
   const items = useSummaryCardsConfig({
     ...summaryValues,
@@ -267,7 +279,7 @@ export function SummaryCards() {
         </StaggerContainer>
       </div>
 
-      <div className='bg-card flex flex-col justify-between gap-4 rounded-2xl border p-4 shadow-xs sm:p-5'>
+      <div className='flex flex-col gap-3 self-start'>
         <div className='flex flex-col gap-3'>
           <div className='flex items-center justify-between'>
             <span className='text-muted-foreground text-xs font-medium'>
@@ -314,15 +326,7 @@ export function SummaryCards() {
                   healthLevel === 'caution' && 'text-warning'
                 )}
               >
-                {runwayDays !== null
-                  ? runwayDays < 1
-                    ? t('Less than 1 day left')
-                    : runwayDays > 999
-                      ? `999+ ${t('days')}`
-                      : `~${formatNumber(Math.floor(runwayDays))} ${t('days')}`
-                  : remainQuota <= 0
-                    ? t('Balance depleted')
-                    : t('No recent usage')}
+                {runwayDisplay}
               </div>
             </div>
           </div>

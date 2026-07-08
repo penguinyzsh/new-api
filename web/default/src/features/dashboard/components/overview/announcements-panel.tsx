@@ -70,6 +70,7 @@ export function AnnouncementsPanel() {
       emptyMessage={t('No announcements at this time')}
       height='h-72'
       contentClassName='p-0'
+      variant='bare'
     >
       <ScrollArea className='h-72'>
         <div>
