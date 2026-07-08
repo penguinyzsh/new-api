@@ -8,7 +8,6 @@ DEV_POSTGRES_SERVICE = postgres
 DEV_API_SERVICE = new-api
 DEV_POSTGRES_DB = new-api
 DEV_POSTGRES_USER = root
-DEV_SQLITE_PATH ?= one-api.db
 
 .PHONY: all build-web build-web-classic build-all-web start-api dev dev-api dev-api-rebuild dev-web dev-web-classic reset-setup
 
@@ -62,15 +61,8 @@ reset-setup:
 			-c "DELETE FROM options WHERE key IN ('SelfUseModeEnabled', 'DemoSiteEnabled');"; \
 		echo "Restarting docker dev api so setup status is recalculated..."; \
 		docker compose -f $(DEV_COMPOSE_FILE) restart $(DEV_API_SERVICE); \
-	elif db_path="$${SQLITE_PATH:-$(DEV_SQLITE_PATH)}"; db_path="$${db_path%%\?*}"; [ -f "$$db_path" ]; then \
-		db_path="$${SQLITE_PATH:-$(DEV_SQLITE_PATH)}"; \
-		db_path="$${db_path%%\?*}"; \
-		echo "Detected local SQLite database: $$db_path"; \
-		sqlite3 "$$db_path" \
-			"DELETE FROM setups; DELETE FROM users WHERE role = 100; DELETE FROM options WHERE key IN ('SelfUseModeEnabled', 'DemoSiteEnabled');"; \
-		echo "SQLite setup state reset. Restart the local api process before testing the setup wizard."; \
 	else \
-		echo "No running docker dev PostgreSQL or local SQLite database found."; \
-		echo "Start the dev stack with 'make dev-api', or set SQLITE_PATH/DEV_SQLITE_PATH to your local SQLite database."; \
+		echo "No running docker dev PostgreSQL found."; \
+		echo "Start the dev stack with 'make dev-api' before testing the setup wizard."; \
 		exit 1; \
 	fi

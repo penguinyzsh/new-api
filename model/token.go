@@ -87,14 +87,14 @@ func GetAllUserTokens(userId int, startIdx int, num int) ([]*Token, error) {
 
 // sanitizeLikePattern 校验并清洗用户输入的 LIKE 搜索模式。
 // 规则：
-//  1. 转义 ! 和 _（使用 ! 作为 ESCAPE 字符，兼容 MySQL/PostgreSQL/SQLite）
+//  1. 转义 ! 和 _（使用 ! 作为 ESCAPE 字符）
 //  2. 连续的 % 合并为单个 %
 //  3. 最多允许 2 个 %
 //  4. 含 % 时（模糊搜索），去掉 % 后关键词长度必须 >= 2
 //  5. 不含 % 时按精确匹配
 func sanitizeLikePattern(input string) (string, error) {
 	// 1. 先转义 ESCAPE 字符 ! 自身，再转义 _
-	//    使用 ! 而非 \ 作为 ESCAPE 字符，避免 MySQL 中反斜杠的字符串转义问题
+	//    使用 ! 而非 \ 作为 ESCAPE 字符，避免与普通字符串转义混淆
 	input = strings.ReplaceAll(input, "!", "!!")
 	input = strings.ReplaceAll(input, `_`, `!_`)
 

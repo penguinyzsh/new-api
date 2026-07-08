@@ -3,7 +3,6 @@ package model
 import (
 	"fmt"
 
-	"github.com/QuantumNous/new-api/common"
 	"gorm.io/gorm"
 )
 
@@ -49,9 +48,6 @@ func GetRankingQuotaBuckets(startTime int64, endTime int64, bucketSize int64) ([
 }
 
 func rankingBucketExpr(bucketSize int64) string {
-	if common.UsingMainDatabase(common.DatabaseTypeMySQL) {
-		return fmt.Sprintf("FLOOR(created_at / %d) * %d", bucketSize, bucketSize)
-	}
 	return fmt.Sprintf("(created_at / %d) * %d", bucketSize, bucketSize)
 }
 

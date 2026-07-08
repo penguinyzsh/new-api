@@ -10,7 +10,7 @@
 
 - **后端**：Go 1.22+、Gin Web 框架、GORM v2 ORM
 - **前端**：React 19、TypeScript、Rsbuild、Base UI、Tailwind CSS
-- **数据库**：SQLite、MySQL、PostgreSQL（必须同时支持这三者）
+- **数据库**：PostgreSQL
 - **缓存**：Redis（go-redis）+ 内存缓存
 - **认证**：JWT、WebAuthn/Passkeys、OAuth（GitHub、Discord、OIDC 等）
 - **前端包管理器**：Bun（优先于 npm/yarn/pnpm）
@@ -76,18 +76,18 @@ web/             — 前端主题容器
 
 不要在业务代码中直接导入或调用 `encoding/json`，`json.RawMessage`、`json.Number` 等来自 `encoding/json` 的类型定义仍然可以作为类型使用，但实际的 marshal/unmarshal 调用必须通过 `common.*`
 
-**数据库兼容性：** 所有数据库代码必须同时兼容 SQLite、MySQL >= 5.7.8 和 PostgreSQL >= 9.6
+**数据库约束：** 主数据库和日志数据库统一使用 PostgreSQL
 
 - 优先使用 GORM 方法（`Create`、`Find`、`Where`、`Updates` 等），而不是原始 SQL
-- 让 GORM 处理主键生成；不要直接使用 `AUTO_INCREMENT` 或 `SERIAL`
-- 当无法避免原始 SQL 时，必须处理方言差异：
-  - PostgreSQL 使用 `"column"` 引号，而 MySQL/SQLite 使用 `` `column` ``
+- 让 GORM 处理主键生成；不要直接使用 `SERIAL` 或手写自增逻辑
+- 当无法避免原始 SQL 时，按 PostgreSQL 语法编写：
+  - 列名引用使用 `"column"`
   - 对于 `group`、`key` 这类保留字列名，使用 `model/main.go` 中的 `commonGroupCol`、`commonKeyCol`
   - 布尔值使用 `commonTrueVal` / `commonFalseVal`
-  - 主数据库分支使用 `common.UsingMainDatabase(...)`，日志数据库分支使用 `common.UsingLogDatabase(...)`
-- 不要使用没有跨数据库兜底方案的数据库特性，包括仅 MySQL 函数、仅 PostgreSQL 运算符、SQLite 不支持的 `ALTER COLUMN`，或没有 `TEXT` 兜底的数据库特有 JSON 列类型
-- 迁移必须在三种数据库上都能工作，对 SQLite，使用 `ALTER TABLE ... ADD COLUMN`，不要使用 `ALTER COLUMN`（可参考 `model/main.go` 中的模式）
-- 避免使用像 `gorm:"default:true"` 这样的 GORM 布尔默认值 tag，尤其当默认值本来就是代码里已强制执行的业务规则时，MySQL 和 PostgreSQL 对布尔默认值的归一化可能不同，导致 GORM `AutoMigrate` 在重启时反复执行 `ALTER TABLE`，应优先在请求/模型归一化、hook、构造器或 service 逻辑中设置这些默认值；不要把 `default:true` 简单替换为 `default:1`，除非已在 SQLite、MySQL 和 PostgreSQL 上验证行为一致
+  - 仍然通过 `common.UsingMainDatabase(...)` 和 `common.UsingLogDatabase(...)` 收口数据库分支，避免把方言判断散落到业务代码里
+- 新增或修改数据库逻辑时，不再为其他数据库添加兼容代码、迁移分支、部署说明或测试夹具
+- 迁移和表结构变更以 PostgreSQL 为准，允许直接使用 PostgreSQL 支持的 `ALTER COLUMN`、类型转换和约束能力，但仍需保持升级过程可重复、可回滚、可审计
+- 避免使用像 `gorm:"default:true"` 这样的 GORM 布尔默认值 tag，尤其当默认值本来就是代码里已强制执行的业务规则时，PostgreSQL 对默认值归一化也可能触发不必要的 `ALTER TABLE`，应优先在请求/模型归一化、hook、构造器或 service 逻辑中设置这些默认值
 
 **Relay 与提供商行为：**
 

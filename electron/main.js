@@ -260,13 +260,15 @@ function startServer() {
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
-
-    env.SQLITE_PATH = path.join(dataDir, 'new-api.db');
+    if (!env.SQL_DSN) {
+      reject(new Error('SQL_DSN is required for PostgreSQL deployments'));
+      return;
+    }
     
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('📁 您的数据存储位置：');
+    console.log('📁 本地应用目录：');
     console.log('   ' + dataDir);
-    console.log('   💡 备份提示：复制此目录即可备份所有数据');
+    console.log('   💡 请单独备份 PostgreSQL 数据库与本地日志目录');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     const binaryPath = getBinaryPath();

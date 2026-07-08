@@ -39,8 +39,6 @@ const DATABASE_VARIANT: Record<
   string,
   'info' | 'success' | 'warning' | 'neutral'
 > = {
-  sqlite: 'warning',
-  mysql: 'success',
   postgres: 'success',
 }
 

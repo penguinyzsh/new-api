@@ -31,58 +31,7 @@ const DatabaseStep = ({ setupStatus, renderNavigationButtons, t }) => {
 
   return (
     <>
-      {/* 数据库警告 */}
-      {setupStatus.database_type === 'sqlite' && (
-        <Banner
-          type={isElectron ? 'info' : 'warning'}
-          closeIcon={null}
-          title={isElectron ? t('本地数据存储') : t('数据库警告')}
-          description={
-            isElectron ? (
-              <div>
-                <p>
-                  {t(
-                    '您的数据将安全地存储在本地计算机上。所有配置、用户信息和使用记录都会自动保存，关闭应用后不会丢失。',
-                  )}
-                </p>
-                {window.electron?.dataDir && (
-                  <p className='mt-2 text-sm opacity-80'>
-                    <strong>{t('数据存储位置：')}</strong>
-                    <br />
-                    <code className='bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded'>
-                      {window.electron.dataDir}
-                    </code>
-                  </p>
-                )}
-                <p className='mt-2 text-sm opacity-70'>
-                  💡 {t('提示：如需备份数据，只需复制上述目录即可')}
-                </p>
-              </div>
-            ) : (
-              <div>
-                <p>
-                  {t(
-                    '您正在使用 SQLite 数据库。如果您在容器环境中运行，请确保已正确设置数据库文件的持久化映射，否则容器重启后所有数据将丢失！',
-                  )}
-                </p>
-                <p className='mt-1'>
-                  <strong>
-                    {t(
-                      '建议在生产环境中使用 MySQL 或 PostgreSQL 数据库，或确保 SQLite 数据库文件已映射到宿主机的持久化存储。',
-                    )}
-                  </strong>
-                </p>
-              </div>
-            )
-          }
-          className='!rounded-lg'
-          fullMode={false}
-          bordered
-        />
-      )}
-
-      {/* MySQL数据库提示 */}
-      {setupStatus.database_type === 'mysql' && (
+      {setupStatus.database_type === 'postgres' && (
         <Banner
           type='success'
           closeIcon={null}
@@ -91,7 +40,7 @@ const DatabaseStep = ({ setupStatus, renderNavigationButtons, t }) => {
             <div>
               <p>
                 {t(
-                  '您正在使用 MySQL 数据库。MySQL 是一个可靠的关系型数据库管理系统，适合生产环境使用。',
+                  '当前项目统一使用 PostgreSQL，请在上线前确认备份、保留策略与维护窗口配置。',
                 )}
               </p>
             </div>
@@ -102,19 +51,27 @@ const DatabaseStep = ({ setupStatus, renderNavigationButtons, t }) => {
         />
       )}
 
-      {/* PostgreSQL数据库提示 */}
-      {setupStatus.database_type === 'postgres' && (
+      {setupStatus.database_type && setupStatus.database_type !== 'postgres' && (
         <Banner
-          type='success'
+          type={isElectron ? 'info' : 'warning'}
           closeIcon={null}
-          title={t('数据库信息')}
+          title={t('数据库要求')}
           description={
             <div>
               <p>
                 {t(
-                  '您正在使用 PostgreSQL 数据库。PostgreSQL 是一个功能强大的开源关系型数据库系统，提供了出色的可靠性和数据完整性，适合生产环境使用。',
+                  '当前初始化流程仅面向 PostgreSQL 部署，请先调整数据库配置后再继续。',
                 )}
               </p>
+              {window.electron?.dataDir && (
+                <p className='mt-2 text-sm opacity-80'>
+                  <strong>{t('数据存储位置：')}</strong>
+                  <br />
+                  <code className='bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded'>
+                    {window.electron.dataDir}
+                  </code>
+                </p>
+              )}
             </div>
           }
           className='!rounded-lg'

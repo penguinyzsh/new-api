@@ -10,18 +10,33 @@ import (
 	"time"
 
 	"github.com/QuantumNous/new-api/common"
+	"github.com/QuantumNous/new-api/internal/testpg"
 	"github.com/QuantumNous/new-api/model"
 	relaycommon "github.com/QuantumNous/new-api/relay/common"
 	"github.com/QuantumNous/new-api/types"
-	"github.com/glebarez/sqlite"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func TestMain(m *testing.M) {
-	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+	baseDSN, err := testpg.BaseDSNFromEnv()
+	if err != nil {
+		panic(err.Error())
+	}
+	isolatedDSN, cleanup, err := testpg.CreateIsolatedDSN(baseDSN, "service_package")
+	if err != nil {
+		panic("failed to create isolated postgres schema: " + err.Error())
+	}
+	defer func() {
+		if err := cleanup(); err != nil {
+			panic("failed to cleanup isolated postgres schema: " + err.Error())
+		}
+	}()
+
+	db, err := gorm.Open(postgres.Open(isolatedDSN), &gorm.Config{})
 	if err != nil {
 		panic("failed to open test db: " + err.Error())
 	}
@@ -34,7 +49,7 @@ func TestMain(m *testing.M) {
 	model.DB = db
 	model.LOG_DB = db
 
-	common.SetDatabaseTypes(common.DatabaseTypeSQLite, common.DatabaseTypeSQLite)
+	common.SetDatabaseTypes(common.DatabaseTypePostgreSQL, common.DatabaseTypePostgreSQL)
 	common.RedisEnabled = false
 	common.BatchUpdateEnabled = false
 	common.LogConsumeEnabled = true

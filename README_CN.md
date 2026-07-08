@@ -53,17 +53,10 @@ docker-compose up -d
 # 拉取最新镜像
 docker pull calciumion/new-api:latest
 
-# 使用 SQLite（默认）
+# 使用 PostgreSQL
 docker run --name new-api -d --restart always \
   -p 3000:3000 \
-  -e TZ=Asia/Shanghai \
-  -v ./data:/data \
-  calciumion/new-api:latest
-
-# 使用 MySQL
-docker run --name new-api -d --restart always \
-  -p 3000:3000 \
-  -e SQL_DSN="root:123456@tcp(localhost:3306)/oneapi" \
+  -e SQL_DSN="postgresql://root:123456@localhost:5432/new-api" \
   -e TZ=Asia/Shanghai \
   -v ./data:/data \
   calciumion/new-api:latest
@@ -108,8 +101,7 @@ docker run --name new-api -d --restart always \
 
 | 组件 | 要求 |
 |------|------|
-| **本地数据库** | SQLite（Docker 需挂载 `/data` 目录）|
-| **远程数据库** | MySQL ≥ 5.7.8 或 PostgreSQL ≥ 9.6 |
+| **数据库** | PostgreSQL |
 | **容器引擎** | Docker / Docker Compose |
 | **系统架构** | 仅支持 64 位系统（amd64 / arm64），不支持 32 位系统 |
 
@@ -163,20 +155,11 @@ docker-compose up -d
 <details>
 <summary><strong>方式 2：Docker 命令</strong></summary>
 
-**使用 SQLite：**
+**使用 PostgreSQL：**
 ```bash
 docker run --name new-api -d --restart always \
   -p 3000:3000 \
-  -e TZ=Asia/Shanghai \
-  -v ./data:/data \
-  calciumion/new-api:latest
-```
-
-**使用 MySQL：**
-```bash
-docker run --name new-api -d --restart always \
-  -p 3000:3000 \
-  -e SQL_DSN="root:123456@tcp(localhost:3306)/oneapi" \
+  -e SQL_DSN="postgresql://root:123456@localhost:5432/new-api" \
   -e TZ=Asia/Shanghai \
   -v ./data:/data \
   calciumion/new-api:latest

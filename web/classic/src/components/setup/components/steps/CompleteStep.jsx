@@ -47,11 +47,7 @@ const CompleteStep = ({
 
       <Descriptions>
         <Descriptions.Item itemKey={t('数据库类型')}>
-          {setupStatus.database_type === 'sqlite'
-            ? 'SQLite'
-            : setupStatus.database_type === 'mysql'
-              ? 'MySQL'
-              : 'PostgreSQL'}
+          {setupStatus.database_type || 'PostgreSQL'}
         </Descriptions.Item>
         <Descriptions.Item itemKey={t('管理员账号')}>
           {setupStatus.root_init

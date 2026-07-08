@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -11,13 +10,13 @@ import (
 	"github.com/QuantumNous/new-api/common"
 	"github.com/QuantumNous/new-api/constant"
 	"github.com/QuantumNous/new-api/dto"
+	"github.com/QuantumNous/new-api/internal/testpg"
 	"github.com/QuantumNous/new-api/model"
 	"github.com/QuantumNous/new-api/setting/config"
 	"github.com/QuantumNous/new-api/setting/operation_setting"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-	"github.com/glebarez/sqlite"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gorm.io/gorm"
@@ -37,61 +36,40 @@ type userModelsResponse struct {
 func setupModelListControllerTestDB(t *testing.T) *gorm.DB {
 	t.Helper()
 
-	initModelListColumnNames(t)
-
 	gin.SetMode(gin.TestMode)
-	common.SetDatabaseTypes(common.DatabaseTypeSQLite, common.DatabaseTypeSQLite)
 	common.RedisEnabled = false
-
-	dsn := fmt.Sprintf("file:%s?mode=memory&cache=shared", strings.ReplaceAll(t.Name(), "/", "_"))
-	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
-	require.NoError(t, err)
-	model.DB = db
-	model.LOG_DB = db
-
-	require.NoError(t, db.AutoMigrate(&model.User{}, &model.Channel{}, &model.Ability{}, &model.Model{}, &model.Vendor{}))
-
-	t.Cleanup(func() {
-		sqlDB, err := db.DB()
-		if err == nil {
-			_ = sqlDB.Close()
-		}
-	})
-
-	return db
-}
-
-func initModelListColumnNames(t *testing.T) {
-	t.Helper()
-
 	originalIsMasterNode := common.IsMasterNode
-	originalSQLitePath := common.SQLitePath
-	originalMainDatabaseType := common.MainDatabaseType()
-	originalLogDatabaseType := common.LogDatabaseType()
 	originalSQLDSN, hadSQLDSN := os.LookupEnv("SQL_DSN")
+	originalLogSQLDSN, hadLogSQLDSN := os.LookupEnv("LOG_SQL_DSN")
 	defer func() {
 		common.IsMasterNode = originalIsMasterNode
-		common.SQLitePath = originalSQLitePath
-		common.SetDatabaseTypes(originalMainDatabaseType, originalLogDatabaseType)
 		if hadSQLDSN {
 			require.NoError(t, os.Setenv("SQL_DSN", originalSQLDSN))
 		} else {
 			require.NoError(t, os.Unsetenv("SQL_DSN"))
 		}
+		if hadLogSQLDSN {
+			require.NoError(t, os.Setenv("LOG_SQL_DSN", originalLogSQLDSN))
+		} else {
+			require.NoError(t, os.Unsetenv("LOG_SQL_DSN"))
+		}
 	}()
 
-	common.IsMasterNode = false
-	common.SQLitePath = fmt.Sprintf("file:%s_init?mode=memory&cache=shared", strings.ReplaceAll(t.Name(), "/", "_"))
-	common.SetDatabaseTypes(common.DatabaseTypeSQLite, common.DatabaseTypeSQLite)
-	require.NoError(t, os.Setenv("SQL_DSN", "local"))
+	dsn := testpg.NewIsolatedDSN(t)
+	common.IsMasterNode = true
+	require.NoError(t, os.Setenv("SQL_DSN", dsn))
+	require.NoError(t, os.Unsetenv("LOG_SQL_DSN"))
 
 	require.NoError(t, model.InitDB())
-	if model.DB != nil {
+	require.NoError(t, model.InitLogDB())
+	db := model.DB
+	t.Cleanup(func() {
 		sqlDB, err := model.DB.DB()
 		if err == nil {
 			_ = sqlDB.Close()
 		}
-	}
+	})
+	return db
 }
 
 func withTieredBillingConfig(t *testing.T, modes map[string]string, exprs map[string]string) {

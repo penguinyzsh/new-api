@@ -113,11 +113,7 @@ func GetChannel(group string, model string, retry int, requestPath string) (*Cha
 	if err != nil {
 		return nil, err
 	}
-	if common.UsingMainDatabase(common.DatabaseTypeSQLite) || common.UsingMainDatabase(common.DatabaseTypePostgreSQL) {
-		err = channelQuery.Order("weight DESC").Find(&abilities).Error
-	} else {
-		err = channelQuery.Order("weight DESC").Find(&abilities).Error
-	}
+	err = channelQuery.Order("weight DESC").Find(&abilities).Error
 	if err != nil {
 		return nil, err
 	}
@@ -340,23 +336,14 @@ func FixAbility() (int, int, error) {
 	}
 	defer fixLock.Unlock()
 
-	// truncate abilities table
-	if common.UsingMainDatabase(common.DatabaseTypeSQLite) {
-		err := DB.Exec("DELETE FROM abilities").Error
-		if err != nil {
-			common.SysLog(fmt.Sprintf("Delete abilities failed: %s", err.Error()))
-			return 0, 0, err
-		}
-	} else {
-		err := DB.Exec("TRUNCATE TABLE abilities").Error
-		if err != nil {
-			common.SysLog(fmt.Sprintf("Truncate abilities failed: %s", err.Error()))
-			return 0, 0, err
-		}
+	err := DB.Exec("TRUNCATE TABLE abilities").Error
+	if err != nil {
+		common.SysLog(fmt.Sprintf("Truncate abilities failed: %s", err.Error()))
+		return 0, 0, err
 	}
 	var channels []*Channel
 	// Find all channels
-	err := DB.Model(&Channel{}).Find(&channels).Error
+	err = DB.Model(&Channel{}).Find(&channels).Error
 	if err != nil {
 		return 0, 0, err
 	}

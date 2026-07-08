@@ -28,44 +28,23 @@ interface DatabaseStepProps {
   status?: SetupStatus
 }
 
-const DATABASE_META: Record<
-  string,
-  {
-    label: string
-    descriptionKey: string
-    variant: 'info' | 'success' | 'warning'
-  }
-> = {
-  sqlite: {
-    label: 'SQLite',
-    descriptionKey:
-      'SQLite stores all data in a single file. Make sure that file is persisted when running in containers.',
-    variant: 'warning',
-  },
-  mysql: {
-    label: 'MySQL',
-    descriptionKey:
-      'MySQL is a production-ready relational database. Keep your credentials secure.',
-    variant: 'success',
-  },
-  postgres: {
-    label: 'PostgreSQL',
-    descriptionKey:
-      'PostgreSQL offers advanced reliability and data integrity for production workloads.',
-    variant: 'success',
-  },
-}
-
 function resolveDatabaseMeta(type?: string) {
   if (!type) return null
   const normalized = type.toLowerCase()
-  return (
-    DATABASE_META[normalized] ?? {
-      label: type,
-      descriptionKey: 'Custom database driver detected.',
-      variant: 'info' as const,
+  if (normalized === 'postgres') {
+    return {
+      label: 'PostgreSQL',
+      descriptionKey:
+        'PostgreSQL is configured as the required database for this project.',
+      variant: 'success' as const,
     }
-  )
+  }
+  return {
+    label: type,
+    descriptionKey:
+      'This project now requires PostgreSQL. Update your database configuration before continuing.',
+    variant: 'warning' as const,
+  }
 }
 
 export function DatabaseStep({ status }: DatabaseStepProps) {
@@ -106,48 +85,6 @@ export function DatabaseStep({ status }: DatabaseStepProps) {
         />
       </div>
 
-      {status?.database_type === 'sqlite' && (
-        <Alert className='border-amber-200 bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/40'>
-          <AlertTitle className='flex items-center gap-2'>
-            <HardDrive className='size-4 text-amber-500' />
-            {t('Persist your data file')}
-          </AlertTitle>
-          <AlertDescription>
-            <p>
-              {t(
-                'When running in containers or ephemeral environments, ensure the SQLite file is mapped to persistent storage to avoid data loss on restart.'
-              )}
-            </p>
-            {isElectron && electronDataDir && (
-              <p className='mt-3 rounded-md bg-amber-100/70 px-3 py-2 font-mono text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-200'>
-                {t('Data directory:')} {electronDataDir}
-              </p>
-            )}
-            {isElectron && !electronDataDir && (
-              <p className='text-muted-foreground mt-3 text-xs'>
-                {t(
-                  'Data is stored locally on this device. Use system backups to keep a safe copy.'
-                )}
-              </p>
-            )}
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {status?.database_type === 'mysql' && (
-        <Alert className='border-emerald-200 bg-emerald-50 dark:border-emerald-900/60 dark:bg-emerald-950/40'>
-          <AlertTitle className='flex items-center gap-2'>
-            <Server className='size-4 text-emerald-500' />
-            {t('MySQL detected')}
-          </AlertTitle>
-          <AlertDescription>
-            {t(
-              'MySQL is production ready. Ensure automated backups and a dedicated user with the minimal required privileges are configured.'
-            )}
-          </AlertDescription>
-        </Alert>
-      )}
-
       {status?.database_type === 'postgres' && (
         <Alert className='border-sky-200 bg-sky-50 dark:border-sky-900/60 dark:bg-sky-950/40'>
           <AlertTitle className='flex items-center gap-2'>
@@ -155,12 +92,43 @@ export function DatabaseStep({ status }: DatabaseStepProps) {
             {t('PostgreSQL detected')}
           </AlertTitle>
           <AlertDescription>
-            {t(
-              'PostgreSQL offers strong reliability guarantees. Double check your maintenance window and retention policies before going live.'
-            )}
+            <p>
+              {t(
+                'Review your backup, retention, and maintenance settings before going live.'
+              )}
+            </p>
           </AlertDescription>
         </Alert>
       )}
+
+      {status?.database_type &&
+        status.database_type !== 'postgres' && (
+          <Alert className='border-amber-200 bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/40'>
+            <AlertTitle className='flex items-center gap-2'>
+              <HardDrive className='size-4 text-amber-500' />
+              {t('Unsupported database configuration')}
+            </AlertTitle>
+            <AlertDescription>
+              <p>
+                {t(
+                  'This setup flow is designed for PostgreSQL deployments.'
+                )}
+              </p>
+              {isElectron && electronDataDir && (
+                <p className='mt-3 rounded-md bg-amber-100/70 px-3 py-2 font-mono text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-200'>
+                  {t('Data directory:')} {electronDataDir}
+                </p>
+              )}
+              {isElectron && !electronDataDir && (
+                <p className='text-muted-foreground mt-3 text-xs'>
+                  {t(
+                    'Data is stored locally on this device. Use system backups to keep a safe copy.'
+                  )}
+                </p>
+              )}
+            </AlertDescription>
+          </Alert>
+        )}
     </div>
   )
 }

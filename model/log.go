@@ -31,29 +31,11 @@ func applyExplicitLogTextFilter(tx *gorm.DB, column string, value string) (*gorm
 }
 
 func buildLogLikeCondition(column string, value string) (string, string, error) {
-	if common.UsingLogDatabase(common.DatabaseTypeClickHouse) {
-		pattern, err := sanitizeClickHouseLikePattern(value)
-		if err != nil {
-			return "", "", err
-		}
-		return column + " LIKE ?", pattern, nil
-	}
-
 	pattern, err := sanitizeLikePattern(value)
 	if err != nil {
 		return "", "", err
 	}
 	return column + " LIKE ? ESCAPE '!'", pattern, nil
-}
-
-func sanitizeClickHouseLikePattern(input string) (string, error) {
-	input = strings.ReplaceAll(input, `\`, `\\`)
-	input = strings.ReplaceAll(input, `_`, `\_`)
-
-	if err := validateLikePattern(input); err != nil {
-		return "", err
-	}
-	return input, nil
 }
 
 type Log struct {
@@ -103,10 +85,6 @@ func createLog(log *Log) error {
 	return LOG_DB.Create(log).Error
 }
 
-func clickHouseLogOrder(prefix string) string {
-	return prefix + "created_at desc, " + prefix + "request_id desc"
-}
-
 func assignDisplayLogIds(logs []*Log, startIdx int) {
 	for i := range logs {
 		logs[i].Id = startIdx + i + 1
@@ -132,11 +110,7 @@ func formatUserLogs(logs []*Log, startIdx int) {
 }
 
 func GetLogByTokenId(tokenId int) (logs []*Log, err error) {
-	order := "id desc"
-	if common.UsingLogDatabase(common.DatabaseTypeClickHouse) {
-		order = clickHouseLogOrder("")
-	}
-	err = LOG_DB.Model(&Log{}).Where("token_id = ?", tokenId).Order(order).Limit(common.MaxRecentItems).Find(&logs).Error
+	err = LOG_DB.Model(&Log{}).Where("token_id = ?", tokenId).Order("id desc").Limit(common.MaxRecentItems).Find(&logs).Error
 	formatUserLogs(logs, 0)
 	return logs, err
 }
@@ -504,16 +478,9 @@ func GetAllLogs(logType int, startTimestamp int64, endTimestamp int64, modelName
 	if err != nil {
 		return nil, 0, err
 	}
-	order := "logs.created_at desc, logs.id desc"
-	if common.UsingLogDatabase(common.DatabaseTypeClickHouse) {
-		order = clickHouseLogOrder("logs.")
-	}
-	err = tx.Order(order).Limit(num).Offset(startIdx).Find(&logs).Error
+	err = tx.Order("logs.created_at desc, logs.id desc").Limit(num).Offset(startIdx).Find(&logs).Error
 	if err != nil {
 		return nil, 0, err
-	}
-	if common.UsingLogDatabase(common.DatabaseTypeClickHouse) {
-		assignDisplayLogIds(logs, startIdx)
 	}
 
 	channelIds := types.NewSet[int]()
@@ -595,11 +562,7 @@ func GetUserLogs(userId int, logType int, startTimestamp int64, endTimestamp int
 		common.SysError("failed to count user logs: " + err.Error())
 		return nil, 0, errors.New("查询日志失败")
 	}
-	order := "logs.id desc"
-	if common.UsingLogDatabase(common.DatabaseTypeClickHouse) {
-		order = clickHouseLogOrder("logs.")
-	}
-	err = tx.Order(order).Limit(num).Offset(startIdx).Find(&logs).Error
+	err = tx.Order("logs.id desc").Limit(num).Offset(startIdx).Find(&logs).Error
 	if err != nil {
 		common.SysError("failed to search user logs: " + err.Error())
 		return nil, 0, errors.New("查询日志失败")
@@ -706,27 +669,6 @@ func DeleteOldLogBatch(ctx context.Context, targetTimestamp int64, limit int) (i
 	}
 	if nil != ctx.Err() {
 		return 0, ctx.Err()
-	}
-
-	if common.UsingLogDatabase(common.DatabaseTypeClickHouse) {
-		// ClickHouse DELETE is a heavy mutation that rewrites data parts, so
-		// per-batch mutations would be pathologically slow. Remove all matching
-		// rows in a single synchronous mutation regardless of limit; the reported
-		// count lets the caller's progress loop complete in one pass.
-		total, err := CountOldLog(ctx, targetTimestamp)
-		if err != nil {
-			return 0, err
-		}
-		if total == 0 {
-			return 0, nil
-		}
-		if err := LOG_DB.WithContext(ctx).Exec(
-			"ALTER TABLE logs DELETE WHERE created_at < ? SETTINGS mutations_sync = 1",
-			targetTimestamp,
-		).Error; err != nil {
-			return 0, err
-		}
-		return total, nil
 	}
 
 	result := LOG_DB.WithContext(ctx).Where("created_at < ?", targetTimestamp).Limit(limit).Delete(&Log{})
