@@ -31,9 +31,8 @@ interface ApiDemoConfig {
   request: string[]
   response: string[]
   responseHighlights: string[]
-  tokens: number
-  latency: number
   accent: AccentTone
+  tokens: number
 }
 
 const ACCENT_CLASSES: Record<
@@ -90,9 +89,8 @@ const API_DEMOS: ApiDemoConfig[] = [
       '}',
     ],
     responseHighlights: ['<text>', '<tokens>'],
-    tokens: 27,
-    latency: 142,
     accent: 'emerald',
+    tokens: 27,
   },
   {
     id: 'responses',
@@ -108,9 +106,8 @@ const API_DEMOS: ApiDemoConfig[] = [
       '}',
     ],
     responseHighlights: ['<text>', '<tokens>'],
-    tokens: 31,
-    latency: 168,
     accent: 'amber',
+    tokens: 31,
   },
   {
     id: 'claude',
@@ -132,9 +129,8 @@ const API_DEMOS: ApiDemoConfig[] = [
       '}',
     ],
     responseHighlights: ['<text>', '<in>', '<out>'],
-    tokens: 29,
-    latency: 156,
     accent: 'blue',
+    tokens: 29,
   },
   {
     id: 'gemini',
@@ -155,9 +151,8 @@ const API_DEMOS: ApiDemoConfig[] = [
       '}',
     ],
     responseHighlights: ['<text>', '<tokens>'],
-    tokens: 25,
-    latency: 93,
     accent: 'violet',
+    tokens: 25,
   },
 ]
 
@@ -240,12 +235,6 @@ export function HeroTerminalDemo(props: HeroTerminalDemoProps) {
               </button>
             )
           })}
-          <div className='ml-auto flex items-center gap-2 pr-2 sm:pr-3'>
-            <span className='inline-block size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.45)]' />
-            <span className='text-foreground/40 font-mono text-[10px] tracking-wider uppercase'>
-              200 ok
-            </span>
-          </div>
         </div>
 
         {/* Endpoint row */}
@@ -280,36 +269,6 @@ export function HeroTerminalDemo(props: HeroTerminalDemoProps) {
 
           {/* Response */}
           <ResponseBlock demo={demo} transitioning={transitioning} />
-        </div>
-
-        {/* Footer metrics */}
-        <div
-          className={cn(
-            'flex items-center justify-between border-t px-5 py-2.5',
-            'border-border/40 bg-muted/30 dark:border-white/[0.05] dark:bg-white/[0.02]'
-          )}
-        >
-          <div className='text-foreground/40 flex items-center gap-3 text-[10px] tabular-nums'>
-            <span className='flex items-center gap-1'>
-              <span className='font-mono'>{demo.latency}</span>
-              <span className='tracking-wider uppercase'>ms</span>
-            </span>
-            <span className='bg-foreground/15 size-1 rounded-full' />
-            <span className='flex items-center gap-1'>
-              <span className='font-mono'>{demo.tokens}</span>
-              <span className='tracking-wider uppercase'>tokens</span>
-            </span>
-            <span className='bg-foreground/15 size-1 rounded-full' />
-            <span className='flex items-center gap-1'>
-              <span className='tracking-wider uppercase'>cost</span>
-              <span className='font-mono'>
-                ${(demo.tokens * 0.00003).toFixed(5)}
-              </span>
-            </span>
-          </div>
-          <span className='text-foreground/30 font-mono text-[10px] tracking-wider uppercase'>
-            stream · sse
-          </span>
         </div>
       </div>
     </div>
