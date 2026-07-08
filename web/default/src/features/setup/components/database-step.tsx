@@ -101,34 +101,31 @@ export function DatabaseStep({ status }: DatabaseStepProps) {
         </Alert>
       )}
 
-      {status?.database_type &&
-        status.database_type !== 'postgres' && (
-          <Alert className='border-amber-200 bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/40'>
-            <AlertTitle className='flex items-center gap-2'>
-              <HardDrive className='size-4 text-amber-500' />
-              {t('Unsupported database configuration')}
-            </AlertTitle>
-            <AlertDescription>
-              <p>
+      {status?.database_type && status.database_type !== 'postgres' && (
+        <Alert className='border-amber-200 bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/40'>
+          <AlertTitle className='flex items-center gap-2'>
+            <HardDrive className='size-4 text-amber-500' />
+            {t('Unsupported database configuration')}
+          </AlertTitle>
+          <AlertDescription>
+            <p>
+              {t('This setup flow is designed for PostgreSQL deployments.')}
+            </p>
+            {isElectron && electronDataDir && (
+              <p className='mt-3 rounded-md bg-amber-100/70 px-3 py-2 font-mono text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-200'>
+                {t('Data directory:')} {electronDataDir}
+              </p>
+            )}
+            {isElectron && !electronDataDir && (
+              <p className='text-muted-foreground mt-3 text-xs'>
                 {t(
-                  'This setup flow is designed for PostgreSQL deployments.'
+                  'Data is stored locally on this device. Use system backups to keep a safe copy.'
                 )}
               </p>
-              {isElectron && electronDataDir && (
-                <p className='mt-3 rounded-md bg-amber-100/70 px-3 py-2 font-mono text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-200'>
-                  {t('Data directory:')} {electronDataDir}
-                </p>
-              )}
-              {isElectron && !electronDataDir && (
-                <p className='text-muted-foreground mt-3 text-xs'>
-                  {t(
-                    'Data is stored locally on this device. Use system backups to keep a safe copy.'
-                  )}
-                </p>
-              )}
-            </AlertDescription>
-          </Alert>
-        )}
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   )
 }

@@ -26,7 +26,7 @@ import zh from './locales/zh.json'
 
 export const resources = {
   en,
-  zh
+  zh,
 } as const
 
 i18n
