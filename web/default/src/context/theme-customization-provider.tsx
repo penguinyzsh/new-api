@@ -32,8 +32,6 @@ import {
   DEFAULT_THEME_CUSTOMIZATION,
   resolveThemeFont,
   THEME_COOKIE_KEYS,
-  THEME_FONT_VALUES,
-  THEME_PRESET_VALUES,
   THEME_RADIUS_VALUES,
   THEME_SCALE_VALUES,
   type ThemeCustomization,
@@ -97,19 +95,11 @@ const ThemeCustomizationContext =
 export function ThemeCustomizationProvider(props: {
   children: React.ReactNode
 }) {
-  const [preset, _setPreset] = useState<ThemePreset>(() =>
-    readCookie<ThemePreset>(
-      THEME_COOKIE_KEYS.preset,
-      THEME_PRESET_VALUES,
-      DEFAULT_THEME_CUSTOMIZATION.preset
-    )
+  const [preset, _setPreset] = useState<ThemePreset>(
+    DEFAULT_THEME_CUSTOMIZATION.preset
   )
-  const [font, _setFont] = useState<ThemeFont>(() =>
-    readCookie<ThemeFont>(
-      THEME_COOKIE_KEYS.font,
-      THEME_FONT_VALUES,
-      DEFAULT_THEME_CUSTOMIZATION.font
-    )
+  const [font, _setFont] = useState<ThemeFont>(
+    DEFAULT_THEME_CUSTOMIZATION.font
   )
   const [radius, _setRadius] = useState<ThemeRadius>(() =>
     readCookie<ThemeRadius>(
@@ -132,6 +122,13 @@ export function ThemeCustomizationProvider(props: {
       DEFAULT_THEME_CUSTOMIZATION.contentLayout
     )
   )
+
+  useEffect(() => {
+    removeCookie(THEME_COOKIE_KEYS.preset)
+    removeCookie(THEME_COOKIE_KEYS.font)
+    _setPreset(DEFAULT_THEME_CUSTOMIZATION.preset)
+    _setFont(DEFAULT_THEME_CUSTOMIZATION.font)
+  }, [])
 
   // Mirror state to the <body> via data-* attributes so theme-presets.css can
   // override CSS variables at the right cascade layer.
@@ -170,22 +167,14 @@ export function ThemeCustomizationProvider(props: {
     applyAttribute('data-theme-content-layout', contentLayout)
   }, [contentLayout])
 
-  const setPreset = useCallback((value: ThemePreset) => {
-    _setPreset(value)
-    if (value === DEFAULT_THEME_CUSTOMIZATION.preset) {
-      removeCookie(THEME_COOKIE_KEYS.preset)
-    } else {
-      setCookie(THEME_COOKIE_KEYS.preset, value, COOKIE_MAX_AGE)
-    }
+  const setPreset = useCallback((_value: ThemePreset) => {
+    _setPreset(DEFAULT_THEME_CUSTOMIZATION.preset)
+    removeCookie(THEME_COOKIE_KEYS.preset)
   }, [])
 
-  const setFont = useCallback((value: ThemeFont) => {
-    _setFont(value)
-    if (value === DEFAULT_THEME_CUSTOMIZATION.font) {
-      removeCookie(THEME_COOKIE_KEYS.font)
-    } else {
-      setCookie(THEME_COOKIE_KEYS.font, value, COOKIE_MAX_AGE)
-    }
+  const setFont = useCallback((_value: ThemeFont) => {
+    _setFont(DEFAULT_THEME_CUSTOMIZATION.font)
+    removeCookie(THEME_COOKIE_KEYS.font)
   }, [])
 
   const setRadius = useCallback((value: ThemeRadius) => {
