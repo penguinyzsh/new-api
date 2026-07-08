@@ -37,7 +37,6 @@ oauth/         — OAuth 提供商实现
 pkg/           — 内部包（cachex、ionet）
 web/             — 前端主题容器
  web/default/   — 默认前端（React 19、Rsbuild、Base UI、Tailwind）
-  web/classic/   — 经典前端（React 18、Vite、Semi Design）
   web/default/src/i18n/ — 前端国际化（i18next，zh/en）
 ```
 

@@ -105,10 +105,8 @@ func getWaffoPayMoney(amount float64, group string) float64 {
 }
 
 type WaffoPayRequest struct {
-	Amount         int64  `json:"amount"`
-	PayMethodIndex *int   `json:"pay_method_index"` // 服务端支付方式列表的索引，nil 表示由 Waffo 自动选择
-	PayMethodType  string `json:"pay_method_type"`  // Deprecated: 兼容旧前端，优先使用 pay_method_index
-	PayMethodName  string `json:"pay_method_name"`  // Deprecated: 兼容旧前端，优先使用 pay_method_index
+	Amount         int64 `json:"amount"`
+	PayMethodIndex *int  `json:"pay_method_index"` // 服务端支付方式列表的索引，nil 表示由 Waffo 自动选择
 }
 
 func RequestWaffoAmount(c *gin.Context) {
@@ -165,7 +163,7 @@ func RequestWaffoPay(c *gin.Context) {
 		return
 	}
 
-	// 从服务端配置查找支付方式，客户端只传索引或旧字段
+	// 从服务端配置查找支付方式，客户端只传索引
 	var resolvedPayMethodType, resolvedPayMethodName string
 	methods := setting.GetWaffoPayMethods()
 	if req.PayMethodIndex != nil {
@@ -178,22 +176,6 @@ func RequestWaffoPay(c *gin.Context) {
 		}
 		resolvedPayMethodType = methods[idx].PayMethodType
 		resolvedPayMethodName = methods[idx].PayMethodName
-	} else if req.PayMethodType != "" {
-		// 兼容旧前端：验证客户端传的值在服务端列表中
-		valid := false
-		for _, m := range methods {
-			if m.PayMethodType == req.PayMethodType && m.PayMethodName == req.PayMethodName {
-				valid = true
-				resolvedPayMethodType = m.PayMethodType
-				resolvedPayMethodName = m.PayMethodName
-				break
-			}
-		}
-		if !valid {
-			logger.LogWarn(c.Request.Context(), fmt.Sprintf("Waffo 支付方式无效 user_id=%d pay_method_type=%s pay_method_name=%q", id, req.PayMethodType, req.PayMethodName))
-			c.JSON(http.StatusOK, gin.H{"message": "error", "data": "不支持的支付方式"})
-			return
-		}
 	}
 	// resolvedPayMethodType/Name 为空时，Waffo 自动选择支付方式
 
@@ -248,7 +230,7 @@ func RequestWaffoPay(c *gin.Context) {
 	if setting.WaffoNotifyUrl != "" {
 		notifyUrl = setting.WaffoNotifyUrl
 	}
-	returnUrl := paymentReturnPath("/console/topup?show_history=true")
+	returnUrl := paymentReturnPath("/wallet?show_history=true")
 	if setting.WaffoReturnUrl != "" {
 		returnUrl = setting.WaffoReturnUrl
 	}
@@ -297,7 +279,7 @@ func RequestWaffoPay(c *gin.Context) {
 	}
 
 	orderData := resp.GetData()
-	logger.LogInfo(c.Request.Context(), fmt.Sprintf("Waffo 充值订单创建成功 user_id=%d trade_no=%s amount=%d money=%.2f pay_method_type=%s pay_method_name=%q", id, merchantOrderId, req.Amount, payMoney, resolvedPayMethodType, resolvedPayMethodName))
+	logger.LogInfo(c.Request.Context(), fmt.Sprintf("Waffo 充值订单创建成功 user_id=%d trade_no=%s amount=%d money=%.2f pay_method_index=%v", id, merchantOrderId, req.Amount, payMoney, req.PayMethodIndex))
 
 	paymentUrl := orderData.FetchRedirectURL()
 	if paymentUrl == "" {

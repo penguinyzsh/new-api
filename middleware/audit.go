@@ -154,7 +154,7 @@ func finishAdminAudit(c *gin.Context, writer *auditResponseWriter) {
 		opParams["route"] = route
 	}
 
-	// content 为英文兜底文本（导出/经典前端用）。
+	// content 为英文兜底文本（导出/非本地化消费者用）。
 	content := method + " " + route
 
 	adminInfo := map[string]interface{}{
