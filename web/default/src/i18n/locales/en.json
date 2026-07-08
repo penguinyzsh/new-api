@@ -25,7 +25,7 @@
         "(Optional: redirect model names)": "(Optional: redirect model names)",
         "(Override all channels' groups)": "(Override all channels' groups)",
         "(Override all channels' models)": "(Override all channels' models)",
-        "[{\"ChatGPT\":\"https://chat.openai.com\"},{\"Lobe Chat\":\"https://chat-preview.lobehub.com/?settings={...}\"}]": "[{\"ChatGPT\":\"https://chat.openai.com\"},{\"Lobe Chat\":\"https://chat-preview.lobehub.com/?settings={...}\"}]",
+        "[{\"Cherry Studio\":\"...\"},{\"CC Switch\":\"ccswitch\"}]": "[{\"Cherry Studio\":\"...\"},{\"CC Switch\":\"ccswitch\"}]",
         "[{\"name\":\"支付宝\",\"type\":\"alipay\",\"color\":\"#1677FF\"}]": "[{\"name\":\"Alipay\",\"type\":\"alipay\",\"color\":\"#1677FF\"}]",
         "[{\"name\":\"支付宝\",\"type\":\"alipay\",\"icon\":\"SiAlipay\"}]": "[{\"name\":\"Alipay\",\"type\":\"alipay\",\"icon\":\"SiAlipay\"}]",
         "{\"original-model\": \"replacement-model\"}": "{\"original-model\": \"replacement-model\"}",

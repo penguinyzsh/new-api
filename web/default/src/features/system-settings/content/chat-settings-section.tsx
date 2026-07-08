@@ -175,7 +175,7 @@ export function ChatSettingsSection({
                       <Textarea
                         rows={12}
                         placeholder={t(
-                          '[{"ChatGPT":"https://chat.openai.com"},{"Lobe Chat":"https://chat-preview.lobehub.com/?settings={...}"}]'
+                          '[{"Cherry Studio":"..."},{"CC Switch":"ccswitch"}]'
                         )}
                         {...field}
                       />

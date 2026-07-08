@@ -25,7 +25,7 @@
         "(Optional: redirect model names)": "（可选：重定向模型名称）",
         "(Override all channels' groups)": "覆盖所有渠道的分组",
         "(Override all channels' models)": "覆盖所有渠道的模型",
-        "[{\"ChatGPT\":\"https://chat.openai.com\"},{\"Lobe Chat\":\"https://chat-preview.lobehub.com/?settings={...}\"}]": "[{\"ChatGPT\":\"https://chat.openai.com\"},{\"Lobe Chat\":\"https://chat-preview.lobehub.com/?settings={...}\"}]",
+        "[{\"Cherry Studio\":\"...\"},{\"CC Switch\":\"ccswitch\"}]": "[{\"Cherry Studio\":\"...\"},{\"CC Switch\":\"ccswitch\"}]",
         "[{\"name\":\"支付宝\",\"type\":\"alipay\",\"color\":\"#1677FF\"}]": "[{\"name\":\"支付宝\",\"type\":\"alipay\",\"color\":\"#1677FF\"}]",
         "[{\"name\":\"支付宝\",\"type\":\"alipay\",\"icon\":\"SiAlipay\"}]": "[{\"name\":\"支付宝\",\"type\":\"alipay\",\"icon\":\"SiAlipay\"}]",
         "{\"original-model\": \"replacement-model\"}": "{\"original-model\": \"replacement-model\"}",
