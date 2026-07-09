@@ -116,7 +116,7 @@ export function Home() {
     <PublicLayout showMainContainer={false}>
       <div className='flex min-h-svh flex-col'>
         <Hero isAuthenticated={isAuthenticated} />
-        <Footer />
+        <Footer className='mt-auto' />
       </div>
     </PublicLayout>
   )

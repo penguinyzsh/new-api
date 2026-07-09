@@ -68,7 +68,7 @@ export function Hero(props: HeroProps) {
   return (
     <section
       className={cn(
-        'relative z-10 flex flex-1 flex-col overflow-hidden px-6 pt-24 pb-16 md:pt-32 md:pb-24 lg:pt-36 lg:pb-28',
+        'relative z-10 flex flex-col overflow-hidden px-6 pt-24 pb-16 md:pt-32 md:pb-24 lg:pt-36 lg:pb-28',
         props.className
       )}
     >
@@ -90,7 +90,7 @@ export function Hero(props: HeroProps) {
         className='absolute inset-0 -z-10 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_30%,black_20%,transparent_100%)] bg-[size:4rem_4rem] opacity-[0.08]'
       />
 
-      <div className='mx-auto grid h-full w-full max-w-6xl flex-1 grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:items-stretch lg:gap-8'>
+      <div className='mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-8'>
         {/* Left Column: Title, description, action buttons */}
         <div className='flex flex-col items-start text-left lg:col-span-6'>
           <div>
@@ -115,7 +115,7 @@ export function Hero(props: HeroProps) {
           </div>
 
           <div
-            className='landing-animate-fade-up mt-8 flex flex-wrap items-center gap-3 opacity-0 lg:mt-auto'
+            className='landing-animate-fade-up mt-8 flex flex-wrap items-center gap-3 opacity-0'
             style={{ animationDelay: '120ms' }}
           >
             {props.isAuthenticated ? (
@@ -144,10 +144,10 @@ export function Hero(props: HeroProps) {
 
         {/* Right Column: Hero Terminal API Demo */}
         <div
-          className='landing-animate-fade-up flex w-full items-end justify-center opacity-0 lg:col-span-6'
+          className='landing-animate-fade-up flex w-full items-start justify-center opacity-0 lg:col-span-6'
           style={{ animationDelay: '180ms' }}
         >
-          <HeroTerminalDemo className='mt-8 lg:mt-0' />
+          <HeroTerminalDemo />
         </div>
       </div>
     </section>
