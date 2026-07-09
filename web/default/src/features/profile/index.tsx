@@ -31,6 +31,7 @@ import { ProfileHeader } from './components/profile-header'
 import { ProfileSecurityCard } from './components/profile-security-card'
 import { ProfileSettingsCard } from './components/profile-settings-card'
 import { SidebarModulesCard } from './components/sidebar-modules-card'
+import { SignOutCard } from './components/sign-out-card'
 import { TwoFACard } from './components/two-fa-card'
 import { useProfile } from './hooks'
 
@@ -80,6 +81,7 @@ export function Profile() {
                 {canConfigureSidebar && <SidebarModulesCard />}
                 <PasskeyCard loading={loading} />
                 <TwoFACard loading={loading} />
+                <SignOutCard />
               </div>
             </div>
           </CardStaggerItem>
