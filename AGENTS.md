@@ -159,3 +159,17 @@ web/             — 前端主题容器
 **Pull Request：** 创建 PR 时：
 
 - 起草 PR 标题和正文时，必须使用仓库的 `.github/PULL_REQUEST_TEMPLATE.md` 模板，保留模板结构并填写对应内容，不要改成自定义格式
+
+## Agent 技能
+
+### Issue 跟踪器
+
+Issue 和 PRD 统一记录在 GitHub Issues 中，外部 PR 也作为分诊入口。详见 `docs/agents/issue-tracker.md`
+
+### 分诊标签
+
+仓库使用 `needs-triage`、`needs-info`、`ready-for-agent`、`ready-for-human` 和 `wontfix` 五个标准分诊标签。详见 `docs/agents/triage-labels.md`
+
+### 领域文档
+
+仓库使用单上下文领域文档布局。详见 `docs/agents/domain.md`
