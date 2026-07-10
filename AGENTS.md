@@ -79,6 +79,7 @@ web/             — 前端主题容器
 
 - 优先使用 GORM 方法（`Create`、`Find`、`Where`、`Updates` 等），而不是原始 SQL
 - 让 GORM 处理主键生成；不要直接使用 `SERIAL` 或手写自增逻辑
+- 使用 GORM 查询方法构建 `SELECT ... FOR UPDATE` 行锁时，必须调用 `lockForUpdate(tx)`；禁止使用会被 GORM v2 静默忽略的 `tx.Set("gorm:query_option", "FOR UPDATE")`，也不要在调用处重复构造 `clause.Locking`
 - 当无法避免原始 SQL 时，按 PostgreSQL 语法编写：
   - 列名引用使用 `"column"`
   - 对于 `group`、`key` 这类保留字列名，使用 `model/main.go` 中的 `commonGroupCol`、`commonKeyCol`
