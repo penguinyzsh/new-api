@@ -76,10 +76,6 @@ export function PanelWrapper(props: PanelWrapperProps) {
       : 'overflow-hidden rounded-2xl border bg-card shadow-xs',
     props.className
   )
-  const contentFrameClassName = cn(
-    bare && 'overflow-hidden rounded-xl border bg-card'
-  )
-
   if (props.loading) {
     return (
       <div className={frameClassName}>
@@ -88,13 +84,7 @@ export function PanelWrapper(props: PanelWrapperProps) {
           description={props.description}
           bare={bare}
         />
-        <div
-          className={cn(
-            contentFrameClassName,
-            'p-4 sm:p-5',
-            props.contentClassName
-          )}
-        >
+        <div className={cn('p-4 sm:p-5', props.contentClassName)}>
           <Skeleton className={`w-full ${height}`} />
         </div>
       </div>
@@ -111,7 +101,6 @@ export function PanelWrapper(props: PanelWrapperProps) {
         />
         <div
           className={cn(
-            contentFrameClassName,
             'text-muted-foreground flex items-center justify-center px-4 text-sm',
             height,
             props.contentClassName
@@ -131,13 +120,7 @@ export function PanelWrapper(props: PanelWrapperProps) {
         actions={props.headerActions}
         bare={bare}
       />
-      <div
-        className={cn(
-          contentFrameClassName,
-          'p-4 sm:p-5',
-          props.contentClassName
-        )}
-      >
+      <div className={cn('p-4 sm:p-5', props.contentClassName)}>
         {props.children}
       </div>
     </div>

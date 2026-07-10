@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { useQuery } from '@tanstack/react-query'
-import { Gauge, HeartPulse, Timer } from 'lucide-react'
+import { HeartPulse } from 'lucide-react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -103,20 +103,17 @@ export function PerformanceHealthPanel() {
 
       <div className='grid grid-cols-3 gap-3'>
         <MetricCell
-          icon={HeartPulse}
           label={t('Success rate')}
           value={formatUptimePct(summary.successRate)}
           loading={loading}
           valueClassName={getSuccessRateTextClass(summary.successRate)}
         />
         <MetricCell
-          icon={Timer}
           label={t('Average latency')}
           value={formatLatency(summary.avgLatencyMs)}
           loading={loading}
         />
         <MetricCell
-          icon={Gauge}
           label={t('Throughput')}
           value={formatThroughput(summary.avgTps)}
           loading={loading}
@@ -127,17 +124,14 @@ export function PerformanceHealthPanel() {
 }
 
 function MetricCell(props: {
-  icon: React.ComponentType<{ className?: string }>
   label: string
   value: string
   loading: boolean
   valueClassName?: string
 }) {
-  const Icon = props.icon
   return (
-    <div className='bg-card rounded-xl border px-3 py-2.5'>
-      <div className='text-muted-foreground flex items-center gap-1.5 text-[11px] font-medium'>
-        <Icon className='size-3 shrink-0' aria-hidden='true' />
+    <div className='py-2.5'>
+      <div className='text-muted-foreground flex items-center text-[11px] font-medium'>
         <span className='truncate'>{props.label}</span>
       </div>
       {props.loading ? (
