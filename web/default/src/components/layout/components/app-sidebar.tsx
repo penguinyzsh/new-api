@@ -38,7 +38,7 @@ import { SidebarViewHeader } from './sidebar-view-header'
  * Architecture:
  *   - View resolution + filtering: {@link useSidebarView}
  *   - View registry: `layout/lib/sidebar-view-registry.ts`
- *   - Per-view header: {@link SidebarViewHeader}
+ *   - Per-view back action: {@link SidebarViewHeader}
  *
  * Adding a new nested view only requires registering a {@link SidebarView}
  * in the registry; this component requires no changes.
@@ -50,8 +50,6 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible={collapsible} variant={variant}>
-      {view && <SidebarViewHeader view={view} />}
-
       <SidebarContent className='py-2'>
         <AnimatePresence mode='wait' initial={false}>
           <motion.div
@@ -62,14 +60,25 @@ export function AppSidebar() {
             animate={MOTION_VARIANTS.sidebarSlide.animate}
             exit={shouldReduce ? undefined : MOTION_VARIANTS.sidebarSlide.exit}
             transition={MOTION_TRANSITION.fast}
-            className='flex flex-col'
+            className='flex min-h-full flex-1 flex-col'
           >
-            {navGroups.map((props) => (
-              <NavGroup key={props.id || props.title} {...props} />
-            ))}
+            {navGroups.map((props) => {
+              const key = props.id || props.title
+              const navGroup = <NavGroup {...props} />
+
+              return props.id === 'admin' ? (
+                <div key={key} className='mt-auto'>
+                  {navGroup}
+                </div>
+              ) : (
+                <div key={key}>{navGroup}</div>
+              )
+            })}
           </motion.div>
         </AnimatePresence>
       </SidebarContent>
+
+      {view && <SidebarViewHeader view={view} />}
 
       <SidebarRail />
     </Sidebar>
