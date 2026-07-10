@@ -46,6 +46,7 @@ interface LogsFilterToolbarProps<TData> {
   mobileFilterCount?: number
   stats?: ReactNode
   actionStart?: ReactNode
+  actionsInline?: boolean
   hasActiveFilters: boolean
   hasAdvancedActiveFilters?: boolean
   advancedFilterCount?: number
@@ -132,13 +133,33 @@ export function LogsFilterToolbar<TData>(props: LogsFilterToolbarProps<TData>) {
       />
     </Button>
   ) : null
+  const actionControls = (
+    <>
+      {props.actionStart}
+      <Button
+        type='button'
+        variant='outline'
+        onClick={props.onReset}
+        disabled={!props.hasActiveFilters}
+      >
+        {t('Reset')}
+      </Button>
+      <Button
+        type='button'
+        onClick={props.onSearch}
+        disabled={props.searchLoading}
+      >
+        {props.searchLoading && <Loader2 className='animate-spin' />}
+        {t('Search')}
+      </Button>
+      <DataTableViewOptions table={props.table} />
+    </>
+  )
 
   if (isMobile && props.mobilePinnedFilters != null) {
     return (
       <Drawer open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
-        <div
-          className={cn('bg-card/50 rounded-lg border p-2.5', props.className)}
-        >
+        <div className={cn('py-2.5', props.className)}>
           <div className='grid gap-2'>{props.mobilePinnedFilters}</div>
 
           <div className='mt-2 flex flex-col gap-2'>
@@ -217,12 +238,7 @@ export function LogsFilterToolbar<TData>(props: LogsFilterToolbarProps<TData>) {
   }
 
   return (
-    <div
-      className={cn(
-        'bg-card/50 rounded-lg border p-2.5 sm:p-3',
-        props.className
-      )}
-    >
+    <div className={cn('py-2.5 sm:py-3', props.className)}>
       <div className='flex flex-wrap items-start gap-2'>
         <div className='grid min-w-0 flex-1 grid-cols-1 gap-2 sm:grid-cols-[repeat(auto-fit,minmax(10rem,1fr))]'>
           {props.primaryFilters}
@@ -230,6 +246,11 @@ export function LogsFilterToolbar<TData>(props: LogsFilterToolbarProps<TData>) {
         {advancedToggle && (
           <div className='flex shrink-0 items-center justify-end'>
             {advancedToggle}
+          </div>
+        )}
+        {props.actionsInline && (
+          <div className='flex shrink-0 flex-wrap items-center justify-end gap-1.5 sm:gap-2'>
+            {actionControls}
           </div>
         )}
       </div>
@@ -240,29 +261,16 @@ export function LogsFilterToolbar<TData>(props: LogsFilterToolbarProps<TData>) {
         </div>
       )}
 
-      <div className='mt-2 flex flex-wrap items-center gap-2'>
-        {props.stats}
-        <div className='ms-auto flex flex-wrap items-center justify-end gap-1.5 sm:gap-2'>
-          {props.actionStart}
-          <Button
-            type='button'
-            variant='outline'
-            onClick={props.onReset}
-            disabled={!props.hasActiveFilters}
-          >
-            {t('Reset')}
-          </Button>
-          <Button
-            type='button'
-            onClick={props.onSearch}
-            disabled={props.searchLoading}
-          >
-            {props.searchLoading && <Loader2 className='animate-spin' />}
-            {t('Search')}
-          </Button>
-          <DataTableViewOptions table={props.table} />
+      {(props.stats != null || !props.actionsInline) && (
+        <div className='mt-2 flex flex-wrap items-center gap-2'>
+          {props.stats}
+          {!props.actionsInline && (
+            <div className='ms-auto flex flex-wrap items-center justify-end gap-1.5 sm:gap-2'>
+              {actionControls}
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   )
 }

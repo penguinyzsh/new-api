@@ -265,6 +265,13 @@ export function Wallet(props: WalletProps) {
         <SectionPageLayout.Title>{t('Wallet')}</SectionPageLayout.Title>
         <SectionPageLayout.Content>
           <div className='mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-5'>
+            <AffiliateRewardsCard
+              user={user}
+              affiliateLink={affiliateLink}
+              onTransfer={() => setTransferDialogOpen(true)}
+              loading={affiliateLoading}
+            />
+
             <WalletStatsCard user={user} loading={userLoading} />
 
             <div
@@ -315,13 +322,6 @@ export function Wallet(props: WalletProps) {
                 onPurchaseSuccess={fetchUser}
               />
             </div>
-
-            <AffiliateRewardsCard
-              user={user}
-              affiliateLink={affiliateLink}
-              onTransfer={() => setTransferDialogOpen(true)}
-              loading={affiliateLoading}
-            />
           </div>
         </SectionPageLayout.Content>
       </SectionPageLayout>

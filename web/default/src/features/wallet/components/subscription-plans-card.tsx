@@ -61,6 +61,12 @@ import { cn } from '@/lib/utils'
 
 import type { PaymentMethod, TopupInfo } from '../types'
 
+const PLAN_SKELETON_KEYS = [
+  'plan-skeleton-1',
+  'plan-skeleton-2',
+  'plan-skeleton-3',
+]
+
 interface SubscriptionPlansCardProps {
   topupInfo: TopupInfo | null
   onAvailabilityChange?: (available: boolean) => void
@@ -237,19 +243,19 @@ export function SubscriptionPlansCard({
 
   if (loading) {
     return (
-      <Card data-card-hover='false' className='gap-0 overflow-hidden py-0'>
-        <CardHeader className='border-b p-3 !pb-3 sm:p-5 sm:!pb-5'>
+      <section className='flex flex-col gap-0 overflow-hidden'>
+        <CardHeader className='p-3 !pb-2 sm:p-5 sm:!pb-2'>
           <Skeleton className='h-6 w-32' />
         </CardHeader>
-        <CardContent className='space-y-4 p-3 sm:p-5'>
+        <CardContent className='space-y-4 p-3 pt-0 sm:p-5 sm:pt-0'>
           <Skeleton className='h-20 w-full' />
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3'>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className='h-48 w-full' />
+            {PLAN_SKELETON_KEYS.map((key) => (
+              <Skeleton key={key} className='h-48 w-full' />
             ))}
           </div>
         </CardContent>
-      </Card>
+      </section>
     )
   }
 
@@ -261,13 +267,14 @@ export function SubscriptionPlansCard({
     <>
       <TitledCard
         title={t('Subscription Plans')}
+        variant='bare'
         description={t('Subscribe to a plan for model access')}
         icon={<Crown className='h-4 w-4' />}
         disableHoverEffect
         contentClassName='space-y-4 sm:space-y-5'
       >
         {/* My subscriptions & billing preference */}
-        <div className='rounded-xl border p-3 sm:p-4'>
+        <div className='px-3 pb-3 sm:px-4 sm:pb-4'>
           <div className='flex flex-wrap items-center justify-between gap-2.5 sm:gap-3'>
             <div className='flex min-w-0 flex-wrap items-center gap-2'>
               <span className='text-sm font-medium'>
@@ -411,6 +418,35 @@ export function SubscriptionPlansCard({
                   const isCancelled = subscription?.status === 'cancelled'
                   const isActive =
                     subscription?.status === 'active' && !isExpired
+                  const nextResetTime = subscription?.next_reset_time ?? 0
+                  let statusBadge = (
+                    <StatusBadge
+                      label={t('Expired')}
+                      variant='neutral'
+                      copyable={false}
+                    />
+                  )
+                  if (isCancelled) {
+                    statusBadge = (
+                      <StatusBadge
+                        label={t('Cancelled')}
+                        variant='neutral'
+                        copyable={false}
+                      />
+                    )
+                  }
+                  if (isActive) {
+                    statusBadge = (
+                      <StatusBadge
+                        label={t('Active')}
+                        variant='success'
+                        copyable={false}
+                      />
+                    )
+                  }
+                  let endTimeLabel = t('Expired at')
+                  if (isCancelled) endTimeLabel = t('Cancelled at')
+                  if (isActive) endTimeLabel = t('Until')
 
                   return (
                     <div
@@ -424,25 +460,7 @@ export function SubscriptionPlansCard({
                               ? `${planTitle} · ${t('Subscription')} #${subscription?.id}`
                               : `${t('Subscription')} #${subscription?.id}`}
                           </span>
-                          {isActive ? (
-                            <StatusBadge
-                              label={t('Active')}
-                              variant='success'
-                              copyable={false}
-                            />
-                          ) : isCancelled ? (
-                            <StatusBadge
-                              label={t('Cancelled')}
-                              variant='neutral'
-                              copyable={false}
-                            />
-                          ) : (
-                            <StatusBadge
-                              label={t('Expired')}
-                              variant='neutral'
-                              copyable={false}
-                            />
-                          )}
+                          {statusBadge}
                         </div>
                         {isActive && (
                           <span className='text-muted-foreground'>
@@ -453,21 +471,15 @@ export function SubscriptionPlansCard({
                         )}
                       </div>
                       <div className='text-muted-foreground mt-1.5'>
-                        {isActive
-                          ? t('Until')
-                          : isCancelled
-                            ? t('Cancelled at')
-                            : t('Expired at')}{' '}
+                        {endTimeLabel}{' '}
                         {new Date(
                           (subscription?.end_time || 0) * 1000
                         ).toLocaleString()}
                       </div>
-                      {isActive && (subscription?.next_reset_time ?? 0) > 0 && (
+                      {isActive && nextResetTime > 0 && (
                         <div className='text-muted-foreground mt-1'>
                           {t('Next reset')}:{' '}
-                          {new Date(
-                            subscription!.next_reset_time! * 1000
-                          ).toLocaleString()}
+                          {new Date(nextResetTime * 1000).toLocaleString()}
                         </div>
                       )}
                       <div className='text-muted-foreground mt-1'>
