@@ -19,6 +19,7 @@ For commercial licensing, please contact support@quantumnous.com
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
+import { Card, CardContent } from '@/components/ui/card'
 import { useStatus } from '@/hooks/use-status'
 
 import { AuthLayout } from '../auth-layout'
@@ -30,32 +31,42 @@ export function SignUp() {
   const { status } = useStatus()
 
   return (
-    <AuthLayout>
-      <div className='w-full space-y-8'>
-        <div className='space-y-2'>
-          <h2 className='text-center text-2xl font-semibold tracking-tight sm:text-left'>
-            {t('Create an account')}
-          </h2>
-          <p className='text-muted-foreground text-left text-sm sm:text-base'>
-            {t('Already have an account?')}{' '}
-            <Link
-              to='/sign-in'
-              className='hover:text-primary font-medium underline underline-offset-4'
-            >
-              {t('Sign in')}
-            </Link>
-            .
-          </p>
-        </div>
+    <AuthLayout
+      className='bg-muted/40'
+      contentClassName='sm:w-full sm:max-w-4xl sm:p-6 md:p-10'
+    >
+      <Card className='overflow-hidden p-0'>
+        <CardContent className='grid p-0 md:grid-cols-2'>
+          <div className='flex flex-col gap-8 p-6 md:p-8'>
+            <div className='flex flex-col gap-2'>
+              <h2 className='text-2xl font-semibold tracking-tight'>
+                {t('Create an account')}
+              </h2>
+              <p className='text-muted-foreground text-sm sm:text-base'>
+                {t('Already have an account?')}{' '}
+                <Link
+                  to='/sign-in'
+                  className='hover:text-primary font-medium underline underline-offset-4'
+                >
+                  {t('Sign in')}
+                </Link>
+                .
+              </p>
+            </div>
 
-        <SignUpForm />
+            <SignUpForm />
 
-        <TermsFooter
-          variant='sign-up'
-          status={status}
-          className='text-center'
-        />
-      </div>
+            <TermsFooter
+              variant='sign-up'
+              status={status}
+              className='text-center'
+            />
+          </div>
+          <div className='bg-muted relative hidden min-h-[560px] overflow-hidden md:block'>
+            <div className='from-primary/10 to-primary/5 absolute inset-0 bg-gradient-to-br via-transparent' />
+          </div>
+        </CardContent>
+      </Card>
     </AuthLayout>
   )
 }
