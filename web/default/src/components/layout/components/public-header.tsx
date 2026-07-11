@@ -17,15 +17,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
-import { useCallback, useEffect, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Button } from '@/components/design-system/button'
 import { Dialog } from '@/components/dialog'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { NotificationPopover } from '@/components/notification-popover'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import type { AuthMode } from '@/features/auth/components/auth-dialog'
 import { useNotifications } from '@/hooks/use-notifications'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { useTopNavLinks } from '@/hooks/use-top-nav-links'
@@ -37,6 +38,11 @@ import type { TopNavLink } from '../types'
 import { HeaderLogo } from './header-logo'
 
 const AUTH_PROMPT_SECONDS = 5
+const AuthDialog = lazy(() =>
+  import('@/features/auth/components/auth-dialog').then((module) => ({
+    default: module.AuthDialog,
+  }))
+)
 
 type AuthPromptTarget = {
   title: string
@@ -91,6 +97,19 @@ export function PublicHeader(props: PublicHeaderProps) {
   const notifications = useNotifications()
   const routerState = useRouterState()
   const pathname = routerState.location.pathname
+  const locationSearch = routerState.location.search as {
+    auth?: unknown
+    redirect?: unknown
+  }
+  const authDialogMode =
+    pathname === '/' &&
+    (locationSearch.auth === 'sign-in' || locationSearch.auth === 'sign-up')
+      ? locationSearch.auth
+      : null
+  const authRedirect =
+    typeof locationSearch.redirect === 'string'
+      ? locationSearch.redirect
+      : undefined
 
   const user = auth.user
   const isAuthenticated = !!user
@@ -121,7 +140,10 @@ export function PublicHeader(props: PublicHeaderProps) {
     const timeoutId = window.setTimeout(() => {
       const redirect = authPromptTarget.href
       setAuthPromptTarget(null)
-      navigate({ to: '/sign-in', search: { redirect } })
+      navigate({
+        to: '/',
+        search: { auth: 'sign-in', redirect },
+      })
     }, AUTH_PROMPT_SECONDS * 1000)
 
     return () => {
@@ -138,8 +160,67 @@ export function PublicHeader(props: PublicHeaderProps) {
   const navigateToSignIn = useCallback(() => {
     const redirect = authPromptTarget?.href || '/'
     setAuthPromptTarget(null)
-    navigate({ to: '/sign-in', search: { redirect } })
+    navigate({ to: '/', search: { auth: 'sign-in', redirect } })
   }, [authPromptTarget?.href, navigate])
+
+  const openAuthDialog = useCallback(
+    (mode: AuthMode) => {
+      setMobileOpen(false)
+      navigate({
+        to: '/',
+        search: { auth: mode },
+      })
+    },
+    [navigate]
+  )
+
+  const closeAuthDialog = useCallback(() => {
+    navigate({ to: '/', search: {}, replace: true })
+  }, [navigate])
+
+  const changeAuthMode = useCallback(
+    (mode: AuthMode) => {
+      navigate({
+        to: '/',
+        search: { auth: mode, redirect: authRedirect },
+        replace: true,
+      })
+    },
+    [authRedirect, navigate]
+  )
+
+  let logoContent: React.ReactNode = (
+    <HeaderLogo
+      src={systemLogo}
+      loading={loading}
+      logoLoaded={logoLoaded}
+      className='size-full rounded-lg object-contain'
+    />
+  )
+  if (customLogo) {
+    logoContent = customLogo
+  }
+  if (loading) {
+    logoContent = <Skeleton className='size-full rounded-lg' />
+  }
+
+  let desktopAuthControl: React.ReactNode = null
+  if (showAuthButtons && loading) {
+    desktopAuthControl = <Skeleton className='h-8 w-20 rounded-lg' />
+  } else if (showAuthButtons && !isAuthenticated) {
+    desktopAuthControl = (
+      <>
+        <div className='bg-border/40 mx-1 h-4 w-px' />
+        <Button
+          size='sm'
+          className='h-8 rounded-lg px-3.5 text-xs font-medium'
+          onClick={() => openAuthDialog('sign-in')}
+        >
+          {t('Sign in')}
+        </Button>
+      </>
+    )
+  }
 
   const handleNavLinkClick = useCallback(
     (
@@ -195,18 +276,7 @@ export function PublicHeader(props: PublicHeaderProps) {
               className='group flex shrink-0 items-center gap-2.5'
             >
               <div className='flex size-7 shrink-0 items-center justify-center transition-all duration-300 group-hover:scale-105'>
-                {loading ? (
-                  <Skeleton className='size-full rounded-lg' />
-                ) : customLogo ? (
-                  customLogo
-                ) : (
-                  <HeaderLogo
-                    src={systemLogo}
-                    loading={loading}
-                    logoLoaded={logoLoaded}
-                    className='size-full rounded-lg object-contain'
-                  />
-                )}
+                {logoContent}
               </div>
               <span className='text-sm font-semibold tracking-tight'>
                 {loading ? <Skeleton className='h-4 w-16' /> : displaySiteName}
@@ -215,12 +285,12 @@ export function PublicHeader(props: PublicHeaderProps) {
 
             {/* Desktop nav */}
             <div className='hidden items-center gap-0.5 sm:flex'>
-              {links.map((link, i) => {
+              {links.map((link) => {
                 const isActive = pathname === link.href
                 if (link.external) {
                   return (
                     <a
-                      key={i}
+                      key={`${link.href}-${link.title}`}
                       href={link.href}
                       target='_blank'
                       rel='noopener noreferrer'
@@ -238,7 +308,7 @@ export function PublicHeader(props: PublicHeaderProps) {
                 }
                 return (
                   <Link
-                    key={i}
+                    key={`${link.href}-${link.title}`}
                     to={link.href}
                     disabled={link.disabled}
                     onClick={(event) => handleNavLinkClick(event, link)}
@@ -276,25 +346,7 @@ export function PublicHeader(props: PublicHeaderProps) {
                 />
               )}
 
-              {showAuthButtons && (
-                <>
-                  {loading ? (
-                    <Skeleton className='h-8 w-20 rounded-lg' />
-                  ) : !isAuthenticated ? (
-                    <>
-                      <div className='bg-border/40 mx-1 h-4 w-px' />
-                      <Button
-                        nativeButton={false}
-                        size='sm'
-                        className='h-8 rounded-lg px-3.5 text-xs font-medium'
-                        render={<Link to='/sign-in' />}
-                      >
-                        {t('Sign in')}
-                      </Button>
-                    </>
-                  ) : null}
-                </>
-              )}
+              {desktopAuthControl}
             </div>
 
             {/* Mobile: compact actions + hamburger */}
@@ -361,7 +413,7 @@ export function PublicHeader(props: PublicHeaderProps) {
               if (link.external) {
                 return (
                   <a
-                    key={i}
+                    key={`${link.href}-${link.title}`}
                     href={link.href}
                     target='_blank'
                     rel='noopener noreferrer'
@@ -377,7 +429,7 @@ export function PublicHeader(props: PublicHeaderProps) {
               }
               return (
                 <Link
-                  key={i}
+                  key={`${link.href}-${link.title}`}
                   to={link.href}
                   disabled={link.disabled}
                   onClick={(event) => handleNavLinkClick(event, link, true)}
@@ -400,13 +452,20 @@ export function PublicHeader(props: PublicHeaderProps) {
             style={{ transitionDelay: mobileOpen ? '250ms' : '0ms' }}
           >
             {showAuthButtons && (
-              <Link
-                to={isAuthenticated ? '/dashboard' : '/sign-in'}
-                onClick={() => setMobileOpen(false)}
+              <button
+                type='button'
+                onClick={() => {
+                  if (isAuthenticated) {
+                    setMobileOpen(false)
+                    navigate({ to: '/dashboard' })
+                    return
+                  }
+                  openAuthDialog('sign-in')
+                }}
                 className='bg-foreground text-background inline-flex h-10 items-center justify-center rounded-lg text-sm font-medium transition-opacity hover:opacity-90 active:opacity-80'
               >
                 {isAuthenticated ? t('Go to Dashboard') : t('Sign in')}
-              </Link>
+              </button>
             )}
           </div>
         </div>
@@ -440,6 +499,22 @@ export function PublicHeader(props: PublicHeaderProps) {
           })}
         </div>
       </Dialog>
+
+      {authDialogMode && (
+        <Suspense fallback={null}>
+          <AuthDialog
+            open
+            mode={authDialogMode}
+            redirectTo={authRedirect}
+            onModeChange={changeAuthMode}
+            onOpenChange={(open) => {
+              if (!open) {
+                closeAuthDialog()
+              }
+            }}
+          />
+        </Suspense>
+      )}
     </>
   )
 }

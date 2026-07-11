@@ -18,11 +18,9 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-import { SignUp } from '@/features/auth/sign-up'
 import { useAuthStore } from '@/stores/auth-store'
 
 export const Route = createFileRoute('/(auth)/sign-up')({
-  component: SignUp,
   beforeLoad: async () => {
     const { auth } = useAuthStore.getState()
 
@@ -30,5 +28,11 @@ export const Route = createFileRoute('/(auth)/sign-up')({
     if (auth.user) {
       throw redirect({ to: '/dashboard' })
     }
+
+    throw redirect({
+      to: '/',
+      search: { auth: 'sign-up' },
+      replace: true,
+    })
   },
 })

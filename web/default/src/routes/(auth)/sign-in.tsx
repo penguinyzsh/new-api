@@ -19,7 +19,6 @@ For commercial licensing, please contact support@quantumnous.com
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { z } from 'zod'
 
-import { SignIn } from '@/features/auth/sign-in'
 import { useAuthStore } from '@/stores/auth-store'
 
 const searchSchema = z.object({
@@ -27,7 +26,6 @@ const searchSchema = z.object({
 })
 
 export const Route = createFileRoute('/(auth)/sign-in')({
-  component: SignIn,
   validateSearch: searchSchema,
   beforeLoad: async ({ search }) => {
     const { auth } = useAuthStore.getState()
@@ -38,5 +36,11 @@ export const Route = createFileRoute('/(auth)/sign-in')({
       // 否则跳转到 dashboard
       throw redirect({ to: search?.redirect || '/dashboard' })
     }
+
+    throw redirect({
+      to: '/',
+      search: { auth: 'sign-in', redirect: search?.redirect },
+      replace: true,
+    })
   },
 })

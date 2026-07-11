@@ -39,7 +39,7 @@ export function PasswordInput({
   const [showPassword, setShowPassword] = React.useState(false)
 
   return (
-    <div className={cn('relative rounded-md', className)}>
+    <div data-sensitive-field className={cn('relative rounded-md', className)}>
       <Input
         type={showPassword ? 'text' : 'password'}
         ref={ref}
