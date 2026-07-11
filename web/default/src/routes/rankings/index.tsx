@@ -20,14 +20,12 @@ import { createFileRoute, redirect } from '@tanstack/react-router'
 import z from 'zod'
 
 import { Rankings } from '@/features/rankings'
+import { RANKING_PERIODS } from '@/features/rankings/types'
 import { getFreshModuleAccess } from '@/lib/nav-modules'
 import { useAuthStore } from '@/stores/auth-store'
 
 const rankingsSearchSchema = z.object({
-  period: z
-    .enum(['today', 'week', 'month', 'year'])
-    .optional()
-    .catch(undefined),
+  period: z.enum(RANKING_PERIODS).optional().catch(undefined),
 })
 
 export const Route = createFileRoute('/rankings/')({

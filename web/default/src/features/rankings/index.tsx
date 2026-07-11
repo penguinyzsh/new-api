@@ -30,19 +30,17 @@ import {
   RankingsHero,
 } from './components'
 import { useRankings } from './hooks/use-rankings'
-import type { RankingPeriod } from './types'
-
-const VALID_PERIODS = new Set<RankingPeriod>(['today', 'week', 'month', 'year'])
+import { isRankingPeriod, type RankingPeriod } from './types'
 
 export function Rankings() {
   const { t } = useTranslation()
   const search = useSearch({ from: '/rankings/' })
   const navigate = useNavigate()
 
-  const period: RankingPeriod = VALID_PERIODS.has(
-    search.period as RankingPeriod
-  )
-    ? (search.period as RankingPeriod)
+  const searchPeriod = search.period
+  const period: RankingPeriod =
+    typeof searchPeriod === 'string' && isRankingPeriod(searchPeriod)
+    ? searchPeriod
     : 'week'
 
   const rankingsQuery = useRankings(period)

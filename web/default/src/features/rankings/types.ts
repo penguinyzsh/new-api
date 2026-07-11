@@ -22,7 +22,13 @@ For commercial licensing, please contact support@quantumnous.com
 //
 // Shape of the real data shown on the /rankings page.
 
-export type RankingPeriod = 'today' | 'week' | 'month' | 'year'
+export const RANKING_PERIODS = ['today', 'week', 'month', 'year'] as const
+
+export type RankingPeriod = (typeof RANKING_PERIODS)[number]
+
+export function isRankingPeriod(value: string): value is RankingPeriod {
+  return RANKING_PERIODS.some((period) => period === value)
+}
 
 export type RankingCategoryId =
   | 'all'

@@ -21,14 +21,18 @@ import { useTranslation } from 'react-i18next'
 import { Tabs, TabsList, TabsTrigger } from '@/components/design-system/tabs'
 import { PublicPageHeader } from '@/components/layout'
 
-import type { RankingPeriod } from '../types'
+import {
+  isRankingPeriod,
+  RANKING_PERIODS,
+  type RankingPeriod,
+} from '../types'
 
-const PERIODS: { id: RankingPeriod; labelKey: string }[] = [
-  { id: 'today', labelKey: 'Today' },
-  { id: 'week', labelKey: 'Week' },
-  { id: 'month', labelKey: 'Month' },
-  { id: 'year', labelKey: 'Year' },
-]
+const PERIOD_LABELS: Record<RankingPeriod, string> = {
+  today: 'Today',
+  week: 'Week',
+  month: 'Month',
+  year: 'Year',
+}
 
 type RankingsHeroProps = {
   period: RankingPeriod
@@ -48,12 +52,7 @@ export function RankingsHero(props: RankingsHeroProps) {
       <Tabs
         value={props.period}
         onValueChange={(value) => {
-          if (
-            value === 'today' ||
-            value === 'week' ||
-            value === 'month' ||
-            value === 'year'
-          ) {
+          if (isRankingPeriod(value)) {
             props.onPeriodChange(value)
           }
         }}
@@ -63,13 +62,13 @@ export function RankingsHero(props: RankingsHeroProps) {
           aria-label={t('Period')}
           className='w-full justify-start gap-6 overflow-x-auto overflow-y-hidden border-b p-0'
         >
-          {PERIODS.map((period) => (
+          {RANKING_PERIODS.map((period) => (
             <TabsTrigger
-              key={period.id}
-              value={period.id}
+              key={period}
+              value={period}
               className='flex-none px-0.5 pb-3'
             >
-              {t(period.labelKey)}
+              {t(PERIOD_LABELS[period])}
             </TabsTrigger>
           ))}
         </TabsList>
