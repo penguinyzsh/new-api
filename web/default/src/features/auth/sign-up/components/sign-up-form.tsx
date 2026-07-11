@@ -172,7 +172,7 @@ export function SignUpForm({
       } else {
         toast.error(res?.message || t('Failed to create account'))
       }
-    } catch (_error) {
+    } catch {
       // Errors are handled by global interceptor
     } finally {
       setIsLoading(false)
@@ -216,7 +216,7 @@ export function SignUpForm({
       } else {
         toast.error(res?.message || t('Login failed'))
       }
-    } catch (_error) {
+    } catch {
       toast.error(t('Login failed'))
     } finally {
       setIsWeChatSubmitting(false)
@@ -323,13 +323,12 @@ export function SignUpForm({
                 }
                 onClick={handleSendVerificationCode}
               >
-                {isActive ? (
-                  t('Resend ({{seconds}}s)', { seconds: secondsLeft })
-                ) : isSendingCode ? (
+                {isActive &&
+                  t('Resend ({{seconds}}s)', { seconds: secondsLeft })}
+                {!isActive && isSendingCode && (
                   <Loader2 className='h-4 w-4 animate-spin' />
-                ) : (
-                  t('Send code')
                 )}
+                {!isActive && !isSendingCode && t('Send code')}
               </Button>
             </div>
           </>
@@ -356,7 +355,7 @@ export function SignUpForm({
         <Button
           type='submit'
           size='xl'
-          className='mt-2 w-full justify-center'
+          className='order-last mt-auto w-full justify-center'
           disabled={
             isLoading ||
             (requiresLegalConsent && !agreedToLegal) ||

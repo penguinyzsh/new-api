@@ -34,7 +34,7 @@ export function SignUp() {
     <AuthLayout contentClassName='sm:w-full sm:max-w-4xl sm:p-6 md:p-10'>
       <Card className='bg-background/82 overflow-hidden border-white/30 p-0 shadow-2xl backdrop-blur-xl dark:border-white/10'>
         <CardContent className='grid p-0 md:grid-cols-2'>
-          <div className='flex flex-col gap-8 p-6 md:p-8'>
+          <div className='flex min-h-[560px] flex-col gap-8 p-6 md:p-8'>
             <div className='flex flex-col gap-2'>
               <h2 className='text-2xl font-semibold tracking-tight'>
                 {t('Create an account')}
@@ -51,7 +51,7 @@ export function SignUp() {
               </p>
             </div>
 
-            <SignUpForm />
+            <SignUpForm className='flex flex-1 flex-col' />
 
             <TermsFooter
               variant='sign-up'
