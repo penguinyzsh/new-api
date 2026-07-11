@@ -16,14 +16,26 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import * as React from 'react'
+
+import {
+  ToggleGroup as ShadcnToggleGroup,
+  ToggleGroupItem,
+} from '@/components/ui/toggle-group'
 import { cn } from '@/lib/utils'
 
-function Kbd({ className, ...props }: React.ComponentProps<'kbd'>) {
+function ToggleGroup({
+  className,
+  size = 'default',
+  ...props
+}: React.ComponentProps<typeof ShadcnToggleGroup>) {
   return (
-    <kbd
-      data-slot='kbd'
+    <ShadcnToggleGroup
+      data-control-size={size}
+      size={size}
       className={cn(
-        "pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none in-data-[slot=tooltip-content]:bg-background/20 in-data-[slot=tooltip-content]:text-background dark:in-data-[slot=tooltip-content]:bg-background/10 [&_svg:not([class*='size-'])]:size-3",
+        size === 'default' &&
+          "[&_[data-slot=toggle-group-item]]:h-7 [&_[data-slot=toggle-group-item]]:min-w-7 [&_[data-slot=toggle-group-item]]:text-[0.8rem] [&_[data-slot=toggle-group-item]_svg:not([class*='size-'])]:size-3.5 sm:[&_[data-slot=toggle-group-item]]:h-8 sm:[&_[data-slot=toggle-group-item]]:min-w-8 sm:[&_[data-slot=toggle-group-item]]:text-sm sm:[&_[data-slot=toggle-group-item]_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
@@ -31,14 +43,4 @@ function Kbd({ className, ...props }: React.ComponentProps<'kbd'>) {
   )
 }
 
-function KbdGroup({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <kbd
-      data-slot='kbd-group'
-      className={cn('inline-flex items-center gap-1', className)}
-      {...props}
-    />
-  )
-}
-
-export { Kbd, KbdGroup }
+export { ToggleGroup, ToggleGroupItem }

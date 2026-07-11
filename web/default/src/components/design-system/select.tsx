@@ -16,14 +16,33 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import * as React from 'react'
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger as ShadcnSelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 
-function Kbd({ className, ...props }: React.ComponentProps<'kbd'>) {
+function SelectTrigger({
+  className,
+  size = 'default',
+  ...props
+}: React.ComponentProps<typeof ShadcnSelectTrigger>) {
   return (
-    <kbd
-      data-slot='kbd'
+    <ShadcnSelectTrigger
+      data-control-size={size}
+      size={size}
       className={cn(
-        "pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none in-data-[slot=tooltip-content]:bg-background/20 in-data-[slot=tooltip-content]:text-background dark:in-data-[slot=tooltip-content]:bg-background/10 [&_svg:not([class*='size-'])]:size-3",
+        size === 'default' && 'h-7 text-[0.8rem] sm:h-8 sm:text-sm',
         className
       )}
       {...props}
@@ -31,14 +50,15 @@ function Kbd({ className, ...props }: React.ComponentProps<'kbd'>) {
   )
 }
 
-function KbdGroup({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <kbd
-      data-slot='kbd-group'
-      className={cn('inline-flex items-center gap-1', className)}
-      {...props}
-    />
-  )
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
 }
-
-export { Kbd, KbdGroup }

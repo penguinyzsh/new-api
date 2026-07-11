@@ -16,27 +16,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { Loading03Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
+import * as React from 'react'
 
+import { Input as ShadcnInput } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 
-type SpinnerProps = Omit<React.ComponentProps<'svg'>, 'strokeWidth'> & {
-  strokeWidth?: number
-}
-
-function Spinner({ className, strokeWidth = 2, ...props }: SpinnerProps) {
+function Input({
+  className,
+  ...props
+}: React.ComponentProps<typeof ShadcnInput>) {
   return (
-    <HugeiconsIcon
-      icon={Loading03Icon}
-      data-slot='spinner'
-      role='status'
-      aria-label='Loading'
-      className={cn('size-4 animate-spin', className)}
+    <ShadcnInput
+      data-control-size='default'
+      className={cn('h-7 sm:h-8', className)}
       {...props}
-      strokeWidth={strokeWidth}
     />
   )
 }
 
-export { Spinner }
+export { Input }

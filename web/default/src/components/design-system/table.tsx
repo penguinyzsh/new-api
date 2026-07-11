@@ -16,27 +16,34 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { Loading03Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
+import * as React from 'react'
 
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead as ShadcnTableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 
-type SpinnerProps = Omit<React.ComponentProps<'svg'>, 'strokeWidth'> & {
-  strokeWidth?: number
+function TableHead({
+  className,
+  ...props
+}: React.ComponentProps<typeof ShadcnTableHead>) {
+  return <ShadcnTableHead className={cn('h-9 sm:h-10', className)} {...props} />
 }
 
-function Spinner({ className, strokeWidth = 2, ...props }: SpinnerProps) {
-  return (
-    <HugeiconsIcon
-      icon={Loading03Icon}
-      data-slot='spinner'
-      role='status'
-      aria-label='Loading'
-      className={cn('size-4 animate-spin', className)}
-      {...props}
-      strokeWidth={strokeWidth}
-    />
-  )
+export {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
 }
-
-export { Spinner }

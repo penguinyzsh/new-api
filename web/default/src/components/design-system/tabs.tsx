@@ -16,14 +16,25 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import * as React from 'react'
+
+import {
+  Tabs,
+  TabsContent,
+  TabsList as ShadcnTabsList,
+  TabsTrigger as ShadcnTabsTrigger,
+} from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 
-function Kbd({ className, ...props }: React.ComponentProps<'kbd'>) {
+function TabsList({
+  className,
+  ...props
+}: React.ComponentProps<typeof ShadcnTabsList>) {
   return (
-    <kbd
-      data-slot='kbd'
+    <ShadcnTabsList
+      data-control-size='default'
       className={cn(
-        "pointer-events-none inline-flex h-5 w-fit min-w-5 items-center justify-center gap-1 rounded-sm bg-muted px-1 font-sans text-xs font-medium text-muted-foreground select-none in-data-[slot=tooltip-content]:bg-background/20 in-data-[slot=tooltip-content]:text-background dark:in-data-[slot=tooltip-content]:bg-background/10 [&_svg:not([class*='size-'])]:size-3",
+        'group-data-horizontal/tabs:h-7 sm:group-data-horizontal/tabs:h-8',
         className
       )}
       {...props}
@@ -31,14 +42,16 @@ function Kbd({ className, ...props }: React.ComponentProps<'kbd'>) {
   )
 }
 
-function KbdGroup({ className, ...props }: React.ComponentProps<'div'>) {
+function TabsTrigger({
+  className,
+  ...props
+}: React.ComponentProps<typeof ShadcnTabsTrigger>) {
   return (
-    <kbd
-      data-slot='kbd-group'
-      className={cn('inline-flex items-center gap-1', className)}
+    <ShadcnTabsTrigger
+      className={cn('text-[0.8rem] sm:text-sm', className)}
       {...props}
     />
   )
 }
 
-export { Kbd, KbdGroup }
+export { Tabs, TabsContent, TabsList, TabsTrigger }
