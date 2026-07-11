@@ -21,7 +21,7 @@ import { ChevronLeft } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import {
-  SidebarHeader,
+  SidebarFooter,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -36,7 +36,7 @@ type SidebarViewHeaderProps = {
 }
 
 /**
- * Header for a nested sidebar view (Vercel / Cloudflare drill-in pattern).
+ * Footer for a nested sidebar view (Vercel / Cloudflare drill-in pattern).
  *
  * Renders only the back affordance — workspace context is conveyed by
  * the nav groups below, not a redundant title row.
@@ -46,7 +46,7 @@ export function SidebarViewHeader(props: SidebarViewHeaderProps) {
   const { setOpenMobile } = useSidebar()
 
   return (
-    <SidebarHeader className='border-sidebar-border border-b px-2 py-2 md:mt-[var(--app-header-height,3rem)]'>
+    <SidebarFooter className='border-sidebar-border border-t px-2 py-2'>
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton
@@ -67,6 +67,6 @@ export function SidebarViewHeader(props: SidebarViewHeaderProps) {
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
-    </SidebarHeader>
+    </SidebarFooter>
   )
 }
