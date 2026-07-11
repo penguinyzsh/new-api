@@ -26,15 +26,6 @@ import {
   DataTableRowActionMenu,
   StaticDataTable,
 } from '@/components/data-table'
-import { Button } from '@/components/design-system/button'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/design-system/select'
 import {
   sideDrawerContentClassName,
   sideDrawerFormClassName,
@@ -42,11 +33,20 @@ import {
 } from '@/components/drawer-layout'
 import { StatusBadge } from '@/components/status-badge'
 import { TableId } from '@/components/table-id'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
 } from '@/components/ui/dropdown-menu'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Sheet,
   SheetContent,
