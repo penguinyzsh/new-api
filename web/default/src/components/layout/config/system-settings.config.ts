@@ -18,7 +18,9 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { type TFunction } from 'i18next'
 import {
+  Bell,
   Box,
+  CircleHelp,
   CreditCard,
   Layout,
   Settings,
@@ -45,7 +47,25 @@ import type { NavGroup, SidebarView } from '../types'
  * scopes the items as "administration" actions.
  */
 function getSystemSettingsNavGroups(t: TFunction): NavGroup[] {
+  const contentItems = getContentSectionNavItems(t)
+
   return [
+    {
+      id: 'console-content',
+      title: t('Content'),
+      items: [
+        {
+          title: t('Announcements'),
+          icon: Bell,
+          url: '/system-settings/content/announcements',
+        },
+        {
+          title: t('FAQ'),
+          icon: CircleHelp,
+          url: '/system-settings/content/faq',
+        },
+      ],
+    },
     {
       id: 'system-administration',
       title: t('System Administration'),
@@ -78,7 +98,11 @@ function getSystemSettingsNavGroups(t: TFunction): NavGroup[] {
         {
           title: t('Console Content'),
           icon: Layout,
-          items: getContentSectionNavItems(t),
+          items: contentItems.filter(
+            (item) =>
+              item.url !== '/system-settings/content/announcements' &&
+              item.url !== '/system-settings/content/faq'
+          ),
         },
         {
           title: t('Operations'),

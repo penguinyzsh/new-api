@@ -77,14 +77,14 @@ export function OverviewDashboard() {
                   <ApiInfoPanel />
                 </CardStaggerItem>
               )}
+              {showFAQPanel && (
+                <CardStaggerItem className='lg:col-start-1'>
+                  <FAQPanel />
+                </CardStaggerItem>
+              )}
               {showAnnouncementsPanel && (
                 <CardStaggerItem>
                   <AnnouncementsPanel />
-                </CardStaggerItem>
-              )}
-              {showFAQPanel && (
-                <CardStaggerItem>
-                  <FAQPanel />
                 </CardStaggerItem>
               )}
             </div>
