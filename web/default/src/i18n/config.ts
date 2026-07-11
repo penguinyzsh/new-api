@@ -20,7 +20,7 @@ import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 
-import { convertDetectedLanguage } from './languages'
+import { convertDetectedLanguage, toIntlLocale } from './languages'
 import en from './locales/en.json'
 import zh from './locales/zh.json'
 
@@ -50,5 +50,15 @@ i18n
       convertDetectedLanguage,
     },
   })
+
+function syncDocumentLanguage(language?: string) {
+  if (typeof document === 'undefined') return
+
+  const locale = toIntlLocale(language ?? i18n.resolvedLanguage)
+  if (locale) document.documentElement.lang = locale
+}
+
+i18n.on('languageChanged', syncDocumentLanguage)
+syncDocumentLanguage(i18n.resolvedLanguage)
 
 export default i18n
