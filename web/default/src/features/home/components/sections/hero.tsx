@@ -30,43 +30,24 @@ export function Hero(props: HeroProps) {
   return (
     <section
       className={cn(
-        'relative z-10 flex flex-col overflow-hidden px-6 pt-24 pb-16 md:pt-32 md:pb-24 lg:pt-36 lg:pb-28',
+        'text-foreground relative z-10 flex min-h-[30rem] flex-1 items-center justify-center overflow-hidden px-6 py-20 md:min-h-[34rem] dark:text-white',
         props.className
       )}
     >
-      {/* Radial gradient background */}
-      <div
-        aria-hidden
-        className='pointer-events-none absolute inset-0 -z-10 opacity-25 dark:opacity-[0.12]'
-        style={{
-          background: [
-            'radial-gradient(ellipse 60% 50% at 20% 20%, oklch(0.72 0.18 250 / 80%) 0%, transparent 70%)',
-            'radial-gradient(ellipse 50% 40% at 80% 15%, oklch(0.65 0.15 200 / 60%) 0%, transparent 70%)',
-            'radial-gradient(ellipse 40% 35% at 40% 80%, oklch(0.70 0.12 280 / 40%) 0%, transparent 70%)',
-          ].join(', '),
-        }}
-      />
-      {/* Grid pattern */}
-      <div
-        aria-hidden
-        className='absolute inset-0 -z-10 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_30%,black_20%,transparent_100%)] bg-[size:4rem_4rem] opacity-[0.08]'
-      />
-
-      <div className='mx-auto flex w-full max-w-6xl flex-col items-center gap-12'>
-        {/* Title, description, action buttons */}
-        <div className='flex w-full flex-col items-start text-left'>
+      <div className='mx-auto flex w-full max-w-5xl flex-col items-center text-center'>
+        <div className='flex w-full flex-col items-center'>
           <div className='w-full'>
             <h1
-              className='landing-animate-fade-up text-[clamp(2.25rem,4.5vw,3.25rem)] leading-[1.15] font-bold tracking-tight lg:whitespace-nowrap'
+              className='landing-animate-fade-up text-[clamp(1.75rem,6.5vw,4.75rem)] leading-[1.08] font-semibold tracking-[-0.035em]'
               style={{ animationDelay: '0ms' }}
             >
-              {t('Unified API Gateway for')}{' '}
-              <span className='bg-gradient-to-r from-blue-400 via-violet-400 to-purple-500 bg-clip-text text-transparent'>
+              <span className='block'>{t('Unified API Gateway for')}</span>
+              <span className='block bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 bg-clip-text text-transparent dark:from-cyan-300 dark:via-blue-300 dark:to-violet-300'>
                 {t('Vast Range of AI Models')}
               </span>
             </h1>
             <p
-              className='landing-animate-fade-up text-muted-foreground/80 mt-5 text-base leading-relaxed opacity-0 md:text-[15px] lg:whitespace-nowrap'
+              className='text-muted-foreground landing-animate-fade-up mx-auto mt-6 max-w-3xl text-sm leading-relaxed opacity-0 md:text-base dark:text-white/65'
               style={{ animationDelay: '60ms' }}
             >
               {t(

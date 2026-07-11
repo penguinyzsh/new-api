@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next'
 import { PublicLayout } from '@/components/layout'
 import { Footer } from '@/components/layout/components/footer'
 import { RichContent } from '@/components/rich-content'
+import { Prism } from '@/components/ui/prism/Prism'
 import { useTheme } from '@/context/theme-provider'
 import { isLikelyHtml } from '@/lib/content-format'
 
@@ -119,9 +120,28 @@ export function Home() {
 
   return (
     <PublicLayout showMainContainer={false}>
-      <div className='flex min-h-svh flex-col'>
-        <Hero />
-        <Footer className='mt-auto' />
+      <div className='relative isolate flex min-h-svh flex-col overflow-hidden bg-white transition-colors dark:bg-[#0d0c13]'>
+        <div
+          aria-hidden
+          className='pointer-events-none absolute inset-0 -z-10 opacity-100 dark:opacity-55'
+        >
+          <Prism
+            animationType='3drotate'
+            timeScale={0.2}
+            height={3.5}
+            baseWidth={4}
+            scale={2.2}
+            offset={{ y: 90 }}
+            hueShift={-0.0416}
+            colorFrequency={1}
+            noise={0}
+            glow={1}
+            bloom={1.15}
+            suspendWhenOffscreen
+          />
+        </div>
+        <Hero className='flex-1' />
+        <Footer seamless className='mt-auto bg-transparent' />
       </div>
     </PublicLayout>
   )

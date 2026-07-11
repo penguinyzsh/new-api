@@ -40,6 +40,7 @@ interface FooterProps {
   columns?: FooterColumnProps[]
   copyright?: string
   className?: string
+  seamless?: boolean
 }
 
 const NEW_API_FOOTER_ATTRIBUTION_KEY = [
@@ -227,6 +228,7 @@ export function Footer(props: FooterProps) {
       <footer
         className={cn(
           'border-border/40 relative z-10 border-t',
+          props.seamless && 'border-t-0',
           props.className
         )}
       >
@@ -248,10 +250,24 @@ export function Footer(props: FooterProps) {
 
   return (
     <footer
-      className={cn('border-border/40 relative z-10 border-t', props.className)}
+      className={cn(
+        'border-border/40 relative z-10 border-t',
+        props.seamless && 'border-t-0',
+        props.className
+      )}
     >
-      <div className='mx-auto max-w-6xl px-6 py-12 md:py-16'>
-        <div className='flex flex-col justify-between gap-10 md:flex-row md:gap-16'>
+      <div
+        className={cn(
+          'mx-auto max-w-6xl px-6 py-12 md:py-16',
+          props.seamless && 'py-6 md:py-10'
+        )}
+      >
+        <div
+          className={cn(
+            'flex flex-col justify-between gap-10 md:flex-row md:gap-16',
+            props.seamless && 'gap-6 md:gap-10'
+          )}
+        >
           {/* Brand column */}
           <div className='shrink-0'>
             <Link to='/' className='group flex items-center gap-2.5'>
@@ -272,14 +288,14 @@ export function Footer(props: FooterProps) {
           {/* Links columns */}
           {isDemoSiteMode && (
             <div className='grid grid-cols-3 gap-8 md:gap-16'>
-              {displayColumns.map((column, index) => (
-                <div key={index}>
+              {displayColumns.map((column) => (
+                <div key={column.title}>
                   <p className='text-muted-foreground/50 mb-3 text-xs font-medium tracking-wider uppercase'>
                     {t(column.title)}
                   </p>
                   <ul className='space-y-2.5'>
-                    {column.links.map((link, linkIndex) => (
-                      <li key={linkIndex}>
+                    {column.links.map((link) => (
+                      <li key={`${column.title}-${link.href}`}>
                         <FooterLinkItem link={link} />
                       </li>
                     ))}
@@ -292,7 +308,12 @@ export function Footer(props: FooterProps) {
 
         {/* Copyright + optional legal links inline on the left, project
             attribution on the right; wraps on narrow screens. */}
-        <div className='border-border/30 mt-12 flex flex-col items-center justify-between gap-x-3 gap-y-2 border-t pt-6 sm:flex-row'>
+        <div
+          className={cn(
+            'border-border/30 mt-12 flex flex-col items-center justify-between gap-x-3 gap-y-2 border-t pt-6 sm:flex-row',
+            props.seamless && 'mt-6 border-t-0 pt-0'
+          )}
+        >
           <div className='text-muted-foreground/40 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs sm:justify-start'>
             <span>
               &copy; {currentYear} {displayName}.{' '}
