@@ -29,6 +29,7 @@ import { NotificationSettingsCard } from './components/notification-settings-car
 import { ProfileHeader } from './components/profile-header'
 import { ProfileSecurityCard } from './components/profile-security-card'
 import { SidebarModulesCard } from './components/sidebar-modules-card'
+import { SignOutCard } from './components/sign-out-card'
 import { useProfile } from './hooks'
 
 export function Profile() {
@@ -79,6 +80,7 @@ export function Profile() {
                 onProfileUpdate={refreshProfile}
               />
               {canConfigureSidebar && <SidebarModulesCard />}
+              <SignOutCard />
             </div>
           </div>
         </div>
