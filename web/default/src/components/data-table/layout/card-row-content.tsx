@@ -18,7 +18,11 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import type { Cell, Row } from '@tanstack/react-table'
 
-import { getCellLabel, renderCellContent } from './card-cell-utils'
+import {
+  getCellLabel,
+  isWideCardField,
+  renderCellContent,
+} from './card-cell-utils'
 import { DataTableCardField, DataTableCardRow } from './card-field'
 
 type CardRole = 'title' | 'badge' | 'primary' | 'secondary' | 'hidden'
@@ -41,11 +45,6 @@ function orderCardCells<TData>(
     if (bOrder == null) return -1
     return aOrder - bOrder
   })
-}
-
-function isWideField<TData>(cell: Cell<TData, unknown>): boolean {
-  const meta = cell.column.columnDef.meta
-  return meta?.cardSpan === 2 || meta?.contentMode === 'summary'
 }
 
 /**
@@ -71,8 +70,8 @@ export function CardRowContent<TData>(props: {
         getCardRole(cell) !== 'hidden'
     )
   )
-  const rowCells = bodyCells.filter((cell) => !isWideField(cell))
-  const wideCells = bodyCells.filter((cell) => isWideField(cell))
+  const rowCells = bodyCells.filter((cell) => !isWideCardField(cell))
+  const wideCells = bodyCells.filter((cell) => isWideCardField(cell))
 
   return (
     <div className='flex min-w-0 flex-col'>

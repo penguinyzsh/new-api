@@ -84,23 +84,19 @@ interface DataTableCardRowProps {
  * Dense definition-list row: muted label left, value right.
  * Always visible — no progressive disclosure / "More" click required.
  */
-export function DataTableCardRow({
-  children,
-  className,
-  contentMode = 'wrap',
-  label,
-  valueClassName,
-}: DataTableCardRowProps) {
+export function DataTableCardRow(props: DataTableCardRowProps) {
+  const contentMode = props.contentMode ?? 'wrap'
+
   return (
     <div
       data-slot='data-table-card-row'
       className={cn(
         'flex min-h-6 items-start justify-between gap-4 py-0.5',
-        className
+        props.className
       )}
     >
       <span className='text-muted-foreground shrink-0 pt-0.5 text-xs select-none'>
-        {label}
+        {props.label}
       </span>
       <div
         data-slot='data-table-card-value'
@@ -109,10 +105,10 @@ export function DataTableCardRow({
           (contentMode === 'full' || contentMode === 'wrap') &&
             VALUE_WRAP_CLASS,
           contentMode === 'full' && 'break-all',
-          valueClassName
+          props.valueClassName
         )}
       >
-        {children ?? <span className='text-muted-foreground'>-</span>}
+        {props.children ?? <span className='text-muted-foreground'>-</span>}
       </div>
     </div>
   )

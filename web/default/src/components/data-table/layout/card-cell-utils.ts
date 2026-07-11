@@ -46,6 +46,11 @@ export function renderCellContent<TData>(
   return cell.getValue() as ReactNode
 }
 
+export function isWideCardField<TData>(cell: Cell<TData, unknown>): boolean {
+  const meta = cell.column.columnDef.meta
+  return meta?.cardSpan === 2 || meta?.contentMode === 'summary'
+}
+
 /** Whether visible columns declare a title/status card hierarchy. */
 export function tableHasCompactMeta<TData>(table: Table<TData>): boolean {
   return table.getVisibleLeafColumns().some((col) => {

@@ -29,6 +29,7 @@ import {
   DataTableCardRow,
   MobileCardList,
 } from '@/components/data-table'
+import { isWideCardField } from '@/components/data-table/layout/card-cell-utils'
 import { cn } from '@/lib/utils'
 
 import { LOG_TYPE_ENUM } from '../constants'
@@ -73,11 +74,6 @@ function orderCardCells<TData>(
   })
 }
 
-function isWideField<TData>(cell: Cell<TData, unknown>): boolean {
-  const meta = cell.column.columnDef.meta
-  return meta?.cardSpan === 2 || meta?.contentMode === 'summary'
-}
-
 function UsageLogCard<TData>(props: { cells: Cell<TData, unknown>[] }) {
   const titleCell = props.cells.find((cell) => getCardRole(cell) === 'title')
   const badgeCell = props.cells.find((cell) => getCardRole(cell) === 'badge')
@@ -89,8 +85,8 @@ function UsageLogCard<TData>(props: { cells: Cell<TData, unknown>[] }) {
         getCardRole(cell) !== 'hidden'
     )
   )
-  const rowCells = bodyCells.filter((cell) => !isWideField(cell))
-  const wideCells = bodyCells.filter((cell) => isWideField(cell))
+  const rowCells = bodyCells.filter((cell) => !isWideCardField(cell))
+  const wideCells = bodyCells.filter((cell) => isWideCardField(cell))
 
   return (
     <div className='flex min-w-0 flex-col'>
