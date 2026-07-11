@@ -35,6 +35,7 @@ export interface SearchBarProps {
 export function SearchBar(props: SearchBarProps) {
   const { t } = useTranslation()
   const inputRef = useRef<HTMLInputElement>(null)
+  const shortcutLabel = navigator.platform.includes('Mac') ? '⌘K' : 'Ctrl K'
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -78,7 +79,7 @@ export function SearchBar(props: SearchBarProps) {
           </Button>
         ) : (
           <kbd className='bg-muted text-muted-foreground pointer-events-none hidden rounded-md border px-1.5 py-0.5 font-mono text-xs sm:inline-block'>
-            Ctrl K
+            {shortcutLabel}
           </kbd>
         )}
       </div>

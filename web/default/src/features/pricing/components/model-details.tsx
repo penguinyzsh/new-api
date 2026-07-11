@@ -350,7 +350,7 @@ function ModelBackendQuickStats(props: { model: PricingModel }) {
         return (
           <div key={stat.key} className='flex min-w-0 flex-col gap-1 px-4 py-3'>
             <span className='text-muted-foreground inline-flex min-w-0 items-center gap-1.5 text-xs font-medium'>
-              <Icon className='size-3.5 shrink-0' />
+              <Icon aria-hidden='true' className='size-3.5 shrink-0' />
               <span className='truncate'>{stat.label}</span>
             </span>
             <span className='text-foreground truncate text-sm font-semibold tabular-nums'>
