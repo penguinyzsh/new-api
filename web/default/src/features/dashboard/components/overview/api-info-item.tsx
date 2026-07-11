@@ -118,6 +118,7 @@ export function ApiInfoItemComponent(props: ApiInfoItemProps) {
           />
 
           <Button
+            nativeButton={false}
             variant='ghost'
             size='icon-sm'
             className='hidden sm:inline-flex'

@@ -284,6 +284,7 @@ export function PublicHeader(props: PublicHeaderProps) {
                     <>
                       <div className='bg-border/40 mx-1 h-4 w-px' />
                       <Button
+                        nativeButton={false}
                         size='sm'
                         className='h-8 rounded-lg px-3.5 text-xs font-medium'
                         render={<Link to='/sign-in' />}

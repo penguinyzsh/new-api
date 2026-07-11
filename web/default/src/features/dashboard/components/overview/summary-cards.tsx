@@ -252,7 +252,9 @@ export function SummaryCards() {
       <div className='flex flex-col gap-3'>
         <div className='flex flex-wrap items-start justify-between gap-3'>
           <div className='flex flex-col gap-1'>
-            <h3 className='text-base font-semibold'>{t('Usage at a glance')}</h3>
+            <h3 className='text-base font-semibold'>
+              {t('Usage at a glance')}
+            </h3>
             <p className='text-muted-foreground text-sm'>
               {t('Monitor balance, usage, and request volume')}
             </p>
@@ -313,7 +315,10 @@ export function SummaryCards() {
             <div className='bg-background/60 rounded-lg border px-2.5 py-2'>
               <div className='text-muted-foreground flex items-center gap-1 text-[11px] leading-none font-medium'>
                 {runwayDays !== null && runwayDays < 3 ? (
-                  <TrendingDown className='size-3 shrink-0' aria-hidden='true' />
+                  <TrendingDown
+                    className='size-3 shrink-0'
+                    aria-hidden='true'
+                  />
                 ) : (
                   <ShieldCheck className='size-3 shrink-0' aria-hidden='true' />
                 )}
@@ -332,7 +337,11 @@ export function SummaryCards() {
           </div>
         </div>
 
-        <Button className='justify-between' render={<Link to='/wallet' />}>
+        <Button
+          nativeButton={false}
+          className='justify-between'
+          render={<Link to='/wallet' />}
+        >
           <span>{t('Wallet')}</span>
           <ArrowRight data-icon='inline-end' />
         </Button>

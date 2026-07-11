@@ -42,6 +42,7 @@ export function Hero(props: HeroProps) {
     if (isExternal) {
       return (
         <Button
+          nativeButton={false}
           variant='outline'
           className='group border-border/50 hover:border-border hover:bg-muted/50 inline-flex h-11 items-center gap-1.5 rounded-lg px-5 text-sm font-medium'
           render={
@@ -55,6 +56,7 @@ export function Hero(props: HeroProps) {
     }
     return (
       <Button
+        nativeButton={false}
         variant='outline'
         className='group border-border/50 hover:border-border hover:bg-muted/50 inline-flex h-11 items-center gap-1.5 rounded-lg px-5 text-sm font-medium'
         render={<Link to={docsUrl} />}
@@ -121,6 +123,7 @@ export function Hero(props: HeroProps) {
             {props.isAuthenticated ? (
               <>
                 <Button
+                  nativeButton={false}
                   className='group h-11 rounded-lg px-5 text-sm font-medium'
                   render={<Link to='/dashboard' />}
                 >
@@ -131,6 +134,7 @@ export function Hero(props: HeroProps) {
             ) : (
               <>
                 <Button
+                  nativeButton={false}
                   className='group h-11 rounded-lg px-5 text-sm font-medium'
                   render={<Link to='/sign-up' />}
                 >

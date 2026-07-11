@@ -158,6 +158,7 @@ function MobileSignInButton({ onNavigate }: MobileSignInButtonProps) {
   const { t } = useTranslation()
   return (
     <Button
+      nativeButton={false}
       variant='secondary'
       className='w-full'
       render={<Link to='/sign-in' onClick={onNavigate} />}
