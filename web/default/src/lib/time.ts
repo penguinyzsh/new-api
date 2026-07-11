@@ -129,7 +129,7 @@ export function computeTimeRange(
   }
 
   // Normal mode without day normalization
-  // Add a 1 hour buffer to the end time to preserve historical range behavior.
+  // Add 1 hour buffer to end time (matches legacy frontend behavior)
   // This ensures the current hour's data is fully included
   const end = endDate ? dateToUnixTimestamp(endDate) : now + 3600
   const start = startDate

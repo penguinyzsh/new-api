@@ -17,13 +17,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { useNavigate } from '@tanstack/react-router'
-import { User, LogOut, Settings } from 'lucide-react'
+import { User, Wallet, LogOut, Settings } from 'lucide-react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Button } from '@/components/design-system/button'
 import { SignOutDialog } from '@/components/sign-out-dialog'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import useDialogState from '@/hooks/use-dialog'
+import { useIsSidebarModuleVisible } from '@/hooks/use-sidebar-config'
 import { useUserDisplay } from '@/hooks/use-user-display'
 import { getUserAvatarFallback, getUserAvatarStyle } from '@/lib/avatar'
 import { ROLE } from '@/lib/roles'
@@ -46,6 +47,7 @@ export function ProfileDropdown() {
   const user = useAuthStore((state) => state.auth.user)
   const { displayName, roleLabel } = useUserDisplay(user)
   const isSuperAdmin = user?.role === ROLE.SUPER_ADMIN
+  const isWalletVisible = useIsSidebarModuleVisible('/wallet')
   const avatarName = user?.username || displayName
   const avatarFallback = getUserAvatarFallback(avatarName)
   const avatarFallbackStyle = useMemo(
@@ -57,11 +59,11 @@ export function ProfileDropdown() {
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
-          render={<Button variant='ghost' className='relative size-6 p-0' />}
+          render={<Button size='icon' variant='ghost' className='relative' />}
         >
           <Avatar className='size-6'>
             <AvatarFallback
-              className={`${avatarFallbackClassName} text-[11px]`}
+              className={`${avatarFallbackClassName} text-xs`}
               style={avatarFallbackStyle}
             >
               {avatarFallback}
@@ -104,6 +106,13 @@ export function ProfileDropdown() {
             <User className='size-4' />
             {t('Profile')}
           </DropdownMenuItem>
+
+          {isWalletVisible && (
+            <DropdownMenuItem onClick={() => navigate({ to: '/wallet' })}>
+              <Wallet className='size-4' />
+              {t('Wallet')}
+            </DropdownMenuItem>
+          )}
 
           {isSuperAdmin && (
             <DropdownMenuItem

@@ -20,14 +20,14 @@ For commercial licensing, please contact support@quantumnous.com
  * Theme presets — color palettes, border radius, and density scaling.
  *
  * Usage: applied via data attributes on <body>:
- *   <body data-theme-preset="rose-garden" data-theme-radius="lg" />
+ *   <body data-theme-preset="rose-garden" data-theme-radius="lg" data-theme-scale="sm" />
  *
  * - `data-theme-preset` overrides the color palette defined in ./theme.css and
  *   ships a curated default `--radius` value to match the preset's mood
  *   (e.g. rose-garden uses 1rem, ocean-breeze uses 0.3rem).
  * - Each preset declares both light and dark color values; dark values use
  *   the `.dark` ancestor selector so they apply when html has the `.dark` class.
- * - `data-theme-radius` adjusts visual roundness
+ * - `data-theme-radius` and `data-theme-scale` adjust visual density
  *   independently. The radius block is intentionally placed AFTER the preset
  *   blocks so an explicit user choice overrides the preset's default radius.
  */
@@ -670,9 +670,64 @@ For commercial licensing, please contact support@quantumnous.com
 }
 
 /* ── Border radius ────────────────────────────────────────────────────── */
+[data-theme-radius='none'] {
+  --radius: 0rem;
+}
+[data-theme-radius='sm'] {
+  --radius: 0.3rem;
+}
+[data-theme-radius='md'] {
+  --radius: 0.5rem;
+}
 [data-theme-radius='lg'] {
   --radius: 0.75rem;
 }
 [data-theme-radius='xl'] {
   --radius: 1rem;
+}
+
+/* ── Density scale ────────────────────────────────────────────────────── */
+/* `sm` = compact UI; `lg` = comfortable; `xl` = extra readable. Default keeps Tailwind defaults. */
+[data-theme-scale='sm'] {
+  --text-xs: 0.7rem;
+  --text-sm: 0.78rem;
+  --text-base: 0.88rem;
+  --text-lg: 1rem;
+  --text-xl: 1.13rem;
+  --text-2xl: 1.38rem;
+  --text-3xl: 1.7rem;
+  --spacing: 0.225rem;
+}
+[data-theme-scale='lg'] {
+  --text-xs: 0.84rem;
+  --text-sm: 0.95rem;
+  --text-base: 1.075rem;
+  --text-lg: 1.2rem;
+  --text-xl: 1.35rem;
+  --text-2xl: 1.65rem;
+  --text-3xl: 2rem;
+  --spacing: 0.28rem;
+}
+[data-theme-scale='xl'] {
+  --text-xs: 0.9rem;
+  --text-sm: 1rem;
+  --text-base: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.45rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.15rem;
+  --spacing: 0.3rem;
+}
+
+/* ── Content layout ───────────────────────────────────────────────────── */
+/* `centered` clamps inset content to a comfortable reading width on large screens.
+ * Targets every direct child of <SidebarInset> so router outlet wrappers and
+ * page content alike are centered. Only kicks in once the viewport exceeds the
+ * clamp value. */
+@media (min-width: 1280px) {
+  [data-theme-content-layout='centered'] [data-slot='sidebar-inset'] > * {
+    max-width: var(--max-content-width, 1280px);
+    margin-inline: auto;
+    width: 100%;
+  }
 }

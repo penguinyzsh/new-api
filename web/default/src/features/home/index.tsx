@@ -26,7 +26,7 @@ import { useTheme } from '@/context/theme-provider'
 import { isLikelyHtml } from '@/lib/content-format'
 import { useAuthStore } from '@/stores/auth-store'
 
-import { Hero } from './components'
+import { CTA, Features, Hero, HowItWorks, Stats } from './components'
 import { useHomePageContent } from './hooks'
 
 export function Home() {
@@ -72,20 +72,12 @@ export function Home() {
     if (isUrl) {
       return (
         <PublicLayout showMainContainer={false}>
-          {/*
-            allow-top-navigation-by-user-activation: the custom home page URL is
-            admin-configured (trusted); this lets its target="_top" nav/menu links
-            navigate the top-level window on user click. The default sandbox blocks
-            this on desktop, while some mobile browsers allow it via allow-popups,
-            causing inconsistent behavior. This token only permits user-activated
-            top-level navigation and does NOT grant same-origin access.
-          */}
           <iframe
             ref={iframeRef}
             src={content}
             className='h-screen w-full border-none'
             title={t('Custom Home Page')}
-            sandbox='allow-forms allow-popups allow-popups-to-escape-sandbox allow-scripts allow-top-navigation-by-user-activation'
+            sandbox='allow-forms allow-popups allow-popups-to-escape-sandbox allow-scripts'
             onLoad={syncIframePreferences}
           />
         </PublicLayout>
@@ -122,10 +114,12 @@ export function Home() {
 
   return (
     <PublicLayout showMainContainer={false}>
-      <div className='flex min-h-svh flex-col'>
-        <Hero isAuthenticated={isAuthenticated} />
-        <Footer className='mt-auto' />
-      </div>
+      <Hero isAuthenticated={isAuthenticated} />
+      <Stats />
+      <Features />
+      <HowItWorks />
+      <CTA isAuthenticated={isAuthenticated} />
+      <Footer />
     </PublicLayout>
   )
 }

@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import type { StatusBadgeProps } from '@/components/status-badge'
+import type { StatusVariant } from '@/components/status-badge'
 import {
   BILLING_PRICING_VARS,
   normalizeTierLabel,
@@ -111,10 +111,10 @@ export function parseLogOther(other: string): LogOtherData | null {
  */
 export function getTimeColor(
   seconds: number
-): 'success' | 'warning' | 'danger' {
+): 'success' | 'warning' | 'destructive' {
   if (seconds < 10) return 'success'
   if (seconds < 30) return 'warning'
-  return 'danger'
+  return 'destructive'
 }
 
 /**
@@ -122,10 +122,10 @@ export function getTimeColor(
  */
 export function getFirstResponseTimeColor(
   seconds: number
-): 'success' | 'warning' | 'danger' {
+): 'success' | 'warning' | 'destructive' {
   if (seconds < 5) return 'success'
   if (seconds < 10) return 'warning'
-  return 'danger'
+  return 'destructive'
 }
 
 /**
@@ -133,10 +133,10 @@ export function getFirstResponseTimeColor(
  */
 export function getThroughputColor(
   tokensPerSecond: number
-): 'success' | 'warning' | 'danger' {
+): 'success' | 'warning' | 'destructive' {
   if (tokensPerSecond >= 30) return 'success'
   if (tokensPerSecond >= 15) return 'warning'
-  return 'danger'
+  return 'destructive'
 }
 
 /**
@@ -145,7 +145,7 @@ export function getThroughputColor(
 export function getResponseTimeColor(
   seconds: number,
   completionTokens: number
-): 'success' | 'warning' | 'danger' {
+): 'success' | 'warning' | 'destructive' {
   if (completionTokens < 100 || seconds <= 0) return getTimeColor(seconds)
   return getThroughputColor(completionTokens / seconds)
 }
@@ -195,7 +195,7 @@ export function decodeBillingExprB64(exprB64: string | undefined): string {
 
     return decodeURIComponent(
       Array.prototype.map
-        .call(bytes, (byte: number) => '%' + byte.toString(16).padStart(2, '0'))
+        .call(bytes, (byte: number) => `%${byte.toString(16).padStart(2, '0')}`)
         .join('')
     )
   } catch {
@@ -236,7 +236,7 @@ export interface TieredBillingSummary {
 /**
  * Whether the request payload reports any cache-related token usage. Used to
  * suppress cache pricing rows from the tiered breakdown when the request did
- * not exercise the cache path, matching the established UI behavior.
+ * not exercise the cache path (mirrors the classic frontend behaviour).
  */
 export function hasAnyCacheTokens(
   other: LogOtherData | null | undefined
@@ -289,7 +289,7 @@ export function formatDuration(
   submitTime?: number,
   finishTime?: number,
   unit: 'seconds' | 'milliseconds' = 'milliseconds'
-): { durationSec: number; variant: StatusBadgeProps['variant'] } | null {
+): { durationSec: number; variant: StatusVariant } | null {
   if (!submitTime || !finishTime) return null
 
   const durationSec =
@@ -297,7 +297,10 @@ export function formatDuration(
       ? (finishTime - submitTime) / 1000
       : finishTime - submitTime
 
-  return { durationSec, variant: durationSec > 60 ? 'red' : 'green' }
+  return {
+    durationSec,
+    variant: durationSec > 60 ? 'destructive' : 'success',
+  }
 }
 
 /**
@@ -327,6 +330,7 @@ const AUDIT_TEMPLATES: Record<string, string> = {
   'user.oauth_unbind': 'Removed an OAuth binding for the user',
   // System settings
   'option.update': 'Updated system setting {{key}}',
+  'option.payment_compliance': 'Confirmed payment compliance',
   'option.reset_ratio': 'Reset model ratios',
   'option.clear_affinity_cache': 'Cleared channel affinity cache',
   // Custom OAuth

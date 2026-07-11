@@ -55,28 +55,28 @@ export const colorToBgClass: Record<SemanticColor, string> = {
   slate: 'bg-slate-500',
 }
 
-export const avatarColorMap: Record<SemanticColor, string> = {
-  blue: 'bg-chart-1/10 text-chart-1',
-  green: 'bg-success/10 text-success',
-  cyan: 'bg-chart-2/10 text-chart-2',
-  purple: 'bg-chart-4/10 text-chart-4',
-  pink: 'bg-chart-5/10 text-chart-5',
-  red: 'bg-destructive/10 text-destructive',
-  orange: 'bg-warning/10 text-warning',
-  amber: 'bg-warning/10 text-warning',
-  yellow: 'bg-warning/10 text-warning',
-  lime: 'bg-chart-3/10 text-chart-3',
-  'light-green': 'bg-success/10 text-success',
-  teal: 'bg-chart-2/10 text-chart-2',
-  'light-blue': 'bg-info/10 text-info',
-  indigo: 'bg-chart-1/10 text-chart-1',
-  violet: 'bg-chart-4/10 text-chart-4',
-  grey: 'bg-muted text-muted-foreground',
-  slate: 'bg-muted text-muted-foreground',
+const identityColorClassMap: Record<SemanticColor, string> = {
+  amber: 'bg-identity-amber/10 text-identity-amber',
+  blue: 'bg-identity-blue/10 text-identity-blue',
+  cyan: 'bg-identity-cyan/10 text-identity-cyan',
+  green: 'bg-identity-green/10 text-identity-green',
+  grey: 'bg-identity-grey/10 text-identity-grey',
+  indigo: 'bg-identity-indigo/10 text-identity-indigo',
+  'light-blue': 'bg-identity-light-blue/10 text-identity-light-blue',
+  'light-green': 'bg-identity-green/10 text-identity-green',
+  lime: 'bg-identity-lime/10 text-identity-lime',
+  orange: 'bg-identity-orange/10 text-identity-orange',
+  pink: 'bg-identity-pink/10 text-identity-pink',
+  purple: 'bg-identity-purple/10 text-identity-purple',
+  red: 'bg-identity-red/10 text-identity-red',
+  slate: 'bg-identity-grey/10 text-identity-grey',
+  teal: 'bg-identity-teal/10 text-identity-teal',
+  violet: 'bg-identity-violet/10 text-identity-violet',
+  yellow: 'bg-identity-yellow/10 text-identity-yellow',
 }
 
-export function getAvatarColorClass(name: string): string {
-  return avatarColorMap[stringToColor(name)]
+export function getIdentityColorClass(name: string): string {
+  return identityColorClassMap[stringToColor(name)]
 }
 
 export function getBgColorClass(color?: string): string {
@@ -163,17 +163,13 @@ const TAG_COLORS = [
 ] as const
 
 /**
- * Convert string to a stable semantic color
- * Used for model tags, group badges, user avatars, etc.
- * Same string always returns the same color
+ * Convert string to a stable semantic color.
+ * Use for identity tinting such as avatars and model/entity badges, where a
+ * stable per-name hue aids recognition. Do not use it for status badges,
+ * whose colors must retain their semantic meaning.
  *
- * @param str - Input string (model name, group name, username, etc.)
+ * @param str - Input string (username, etc.)
  * @returns Semantic color name from TAG_COLORS
- *
- * @example
- * stringToColor('gpt-4') // 'blue'
- * stringToColor('claude-3') // 'purple'
- * stringToColor('default') // 'green'
  */
 export function stringToColor(str: string): SemanticColor {
   let sum = 0

@@ -70,7 +70,6 @@ export function AnnouncementsPanel() {
       emptyMessage={t('No announcements at this time')}
       height='h-72'
       contentClassName='p-0'
-      variant='bare'
     >
       <ScrollArea className='h-72'>
         <div>
@@ -82,7 +81,7 @@ export function AnnouncementsPanel() {
                 type='button'
                 onClick={() => handleAnnouncementClick(item)}
                 className={cn(
-                  'group w-full py-3 text-left sm:py-3.5',
+                  'group hover:bg-muted/40 w-full px-3 py-3 text-left transition-colors sm:px-5 sm:py-3.5',
                   idx < list.length - 1 && 'border-border/60 border-b'
                 )}
               >

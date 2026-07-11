@@ -27,14 +27,20 @@ import {
 
 import { getCookie, removeCookie, setCookie } from '@/lib/cookies'
 import {
+  CONTENT_LAYOUT_VALUES,
+  type ContentLayout,
   DEFAULT_THEME_CUSTOMIZATION,
   resolveThemeFont,
   THEME_COOKIE_KEYS,
+  THEME_FONT_VALUES,
+  THEME_PRESET_VALUES,
   THEME_RADIUS_VALUES,
+  THEME_SCALE_VALUES,
   type ThemeCustomization,
   type ThemeFont,
   type ThemePreset,
   type ThemeRadius,
+  type ThemeScale,
 } from '@/lib/theme-customization'
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 // 1 year
@@ -65,6 +71,8 @@ type ThemeCustomizationContextType = {
   setPreset: (preset: ThemePreset) => void
   setFont: (font: ThemeFont) => void
   setRadius: (radius: ThemeRadius) => void
+  setScale: (scale: ThemeScale) => void
+  setContentLayout: (contentLayout: ContentLayout) => void
   resetCustomization: () => void
 }
 
@@ -78,6 +86,8 @@ const FALLBACK_CONTEXT: ThemeCustomizationContextType = {
   setPreset: () => {},
   setFont: () => {},
   setRadius: () => {},
+  setScale: () => {},
+  setContentLayout: () => {},
   resetCustomization: () => {},
 }
 
@@ -87,11 +97,19 @@ const ThemeCustomizationContext =
 export function ThemeCustomizationProvider(props: {
   children: React.ReactNode
 }) {
-  const [preset, _setPreset] = useState<ThemePreset>(
-    DEFAULT_THEME_CUSTOMIZATION.preset
+  const [preset, _setPreset] = useState<ThemePreset>(() =>
+    readCookie<ThemePreset>(
+      THEME_COOKIE_KEYS.preset,
+      THEME_PRESET_VALUES,
+      DEFAULT_THEME_CUSTOMIZATION.preset
+    )
   )
-  const [font, _setFont] = useState<ThemeFont>(
-    DEFAULT_THEME_CUSTOMIZATION.font
+  const [font, _setFont] = useState<ThemeFont>(() =>
+    readCookie<ThemeFont>(
+      THEME_COOKIE_KEYS.font,
+      THEME_FONT_VALUES,
+      DEFAULT_THEME_CUSTOMIZATION.font
+    )
   )
   const [radius, _setRadius] = useState<ThemeRadius>(() =>
     readCookie<ThemeRadius>(
@@ -100,13 +118,20 @@ export function ThemeCustomizationProvider(props: {
       DEFAULT_THEME_CUSTOMIZATION.radius
     )
   )
-
-  useEffect(() => {
-    removeCookie(THEME_COOKIE_KEYS.preset)
-    removeCookie(THEME_COOKIE_KEYS.font)
-    _setPreset(DEFAULT_THEME_CUSTOMIZATION.preset)
-    _setFont(DEFAULT_THEME_CUSTOMIZATION.font)
-  }, [])
+  const [scale, _setScale] = useState<ThemeScale>(() =>
+    readCookie<ThemeScale>(
+      THEME_COOKIE_KEYS.scale,
+      THEME_SCALE_VALUES,
+      DEFAULT_THEME_CUSTOMIZATION.scale
+    )
+  )
+  const [contentLayout, _setContentLayout] = useState<ContentLayout>(() =>
+    readCookie<ContentLayout>(
+      THEME_COOKIE_KEYS.contentLayout,
+      CONTENT_LAYOUT_VALUES,
+      DEFAULT_THEME_CUSTOMIZATION.contentLayout
+    )
+  )
 
   // Mirror state to the <body> via data-* attributes so theme-presets.css can
   // override CSS variables at the right cascade layer.
@@ -134,14 +159,33 @@ export function ThemeCustomizationProvider(props: {
     )
   }, [radius])
 
-  const setPreset = useCallback((_value: ThemePreset) => {
-    _setPreset(DEFAULT_THEME_CUSTOMIZATION.preset)
-    removeCookie(THEME_COOKIE_KEYS.preset)
+  useEffect(() => {
+    applyAttribute(
+      'data-theme-scale',
+      scale === DEFAULT_THEME_CUSTOMIZATION.scale ? null : scale
+    )
+  }, [scale])
+
+  useEffect(() => {
+    applyAttribute('data-theme-content-layout', contentLayout)
+  }, [contentLayout])
+
+  const setPreset = useCallback((value: ThemePreset) => {
+    _setPreset(value)
+    if (value === DEFAULT_THEME_CUSTOMIZATION.preset) {
+      removeCookie(THEME_COOKIE_KEYS.preset)
+    } else {
+      setCookie(THEME_COOKIE_KEYS.preset, value, COOKIE_MAX_AGE)
+    }
   }, [])
 
-  const setFont = useCallback((_value: ThemeFont) => {
-    _setFont(DEFAULT_THEME_CUSTOMIZATION.font)
-    removeCookie(THEME_COOKIE_KEYS.font)
+  const setFont = useCallback((value: ThemeFont) => {
+    _setFont(value)
+    if (value === DEFAULT_THEME_CUSTOMIZATION.font) {
+      removeCookie(THEME_COOKIE_KEYS.font)
+    } else {
+      setCookie(THEME_COOKIE_KEYS.font, value, COOKIE_MAX_AGE)
+    }
   }, [])
 
   const setRadius = useCallback((value: ThemeRadius) => {
@@ -153,28 +197,54 @@ export function ThemeCustomizationProvider(props: {
     }
   }, [])
 
+  const setScale = useCallback((value: ThemeScale) => {
+    _setScale(value)
+    if (value === DEFAULT_THEME_CUSTOMIZATION.scale) {
+      removeCookie(THEME_COOKIE_KEYS.scale)
+    } else {
+      setCookie(THEME_COOKIE_KEYS.scale, value, COOKIE_MAX_AGE)
+    }
+  }, [])
+
+  const setContentLayout = useCallback((value: ContentLayout) => {
+    _setContentLayout(value)
+    if (value === DEFAULT_THEME_CUSTOMIZATION.contentLayout) {
+      removeCookie(THEME_COOKIE_KEYS.contentLayout)
+    } else {
+      setCookie(THEME_COOKIE_KEYS.contentLayout, value, COOKIE_MAX_AGE)
+    }
+  }, [])
+
   const resetCustomization = useCallback(() => {
     setPreset(DEFAULT_THEME_CUSTOMIZATION.preset)
     setFont(DEFAULT_THEME_CUSTOMIZATION.font)
     setRadius(DEFAULT_THEME_CUSTOMIZATION.radius)
-  }, [setPreset, setFont, setRadius])
+    setScale(DEFAULT_THEME_CUSTOMIZATION.scale)
+    setContentLayout(DEFAULT_THEME_CUSTOMIZATION.contentLayout)
+  }, [setPreset, setFont, setRadius, setScale, setContentLayout])
 
   const value = useMemo<ThemeCustomizationContextType>(
     () => ({
       defaults: DEFAULT_THEME_CUSTOMIZATION,
-      customization: { preset, font, radius },
+      customization: { preset, font, radius, scale, contentLayout },
       setPreset,
       setFont,
       setRadius,
+      setScale,
+      setContentLayout,
       resetCustomization,
     }),
     [
       preset,
       font,
       radius,
+      scale,
+      contentLayout,
       setPreset,
       setFont,
       setRadius,
+      setScale,
+      setContentLayout,
       resetCustomization,
     ]
   )

@@ -21,16 +21,16 @@ import type { SetStateAction } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Button } from '@/components/design-system/button'
+import { Input } from '@/components/design-system/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '@/components/design-system/select'
+import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 
 import { removeTrailingSlash } from './utils'
@@ -502,7 +502,7 @@ export function WaffoPancakeSettingsSection({
             <Label>{t('Payment return URL')}</Label>
             <div className='flex gap-2'>
               <Input
-                placeholder='https://example.com/wallet'
+                placeholder='https://example.com/console/topup'
                 value={returnURL}
                 onChange={(event) =>
                   onValueChange('WaffoPancakeReturnURL', event.target.value)
@@ -532,7 +532,7 @@ export function WaffoPancakeSettingsSection({
             <>
               <div className='relative flex items-center py-1'>
                 <div className='flex-1 border-t' />
-                <span className='text-muted-foreground px-3 text-[10px] font-medium tracking-[0.2em] uppercase'>
+                <span className='text-muted-foreground px-3 text-xs font-medium tracking-[0.2em] uppercase'>
                   {t('or pick existing')}
                 </span>
                 <div className='flex-1 border-t' />

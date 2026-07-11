@@ -39,6 +39,8 @@ const DATABASE_VARIANT: Record<
   string,
   'info' | 'success' | 'warning' | 'neutral'
 > = {
+  sqlite: 'warning',
+  mysql: 'success',
   postgres: 'success',
 }
 
@@ -72,11 +74,7 @@ export function CompleteStep({ status, values }: CompleteStepProps) {
             </dt>
             <dd className='flex flex-wrap items-center gap-2'>
               <span className='text-sm font-semibold'>{dbType}</span>
-              <StatusBadge
-                label={dbType}
-                variant={databaseVariant}
-                copyable={false}
-              />
+              <StatusBadge variant={databaseVariant}>{dbType}</StatusBadge>
             </dd>
           </div>
 

@@ -1,15 +1,19 @@
 /*
 Copyright (C) 2023-2026 QuantumNous
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version.
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
+
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 For commercial licensing, please contact support@quantumnous.com
 */
 // Static translation keys that don't get picked up by the t('...') regex.
@@ -22,12 +26,14 @@ export const STATIC_I18N_KEYS = [
   'Rankings',
   'Docs',
   'About',
+
   // Sidebar views (drill-in workspaces)
   'System Settings',
   'Back to Dashboard',
   'Auto-disable rules',
   'Channel health checks',
   'Request retry',
+
   // System settings sidebar
   'System Administration',
   'General',
@@ -38,12 +44,14 @@ export const STATIC_I18N_KEYS = [
   'Models',
   'Routing Reliability',
   'Maintenance',
+
   // System info
   'online',
   'stale',
   'Master instances run scheduled background tasks.',
   'Worker instances do not run master-only background tasks.',
   'Drawing task polling',
+
   // Pricing constants
   'Name',
   'Price: Low to High',
@@ -67,11 +75,13 @@ export const STATIC_I18N_KEYS = [
   'All Tags',
   'More...',
   'Less',
+
   // Roles
   'Super Admin',
   'Admin',
   'User',
   'Guest',
+
   // API Keys
   'Enabled',
   'Disabled',
@@ -93,6 +103,7 @@ export const STATIC_I18N_KEYS = [
   'Successfully created {{count}} API Key(s)',
   'Successfully deleted {{count}} API key(s)',
   'Enter API key for this channel',
+
   // Users
   'Root',
   'Deleted',
@@ -105,6 +116,7 @@ export const STATIC_I18N_KEYS = [
   'Failed to update user',
   'Failed to delete user',
   'No user selected',
+
   // Redemption codes
   'Unused',
   'Disabled',
@@ -129,10 +141,44 @@ export const STATIC_I18N_KEYS = [
   'Expired time cannot be earlier than current time',
   'Quota must be a positive number',
   'Successfully created {{count}} redemption codes',
+
+  // Home page (constants-driven labels)
+  'Cost Tracking',
+  'Model Access',
+  'Guardrails',
+  'Observability',
+  'Budgets',
+  'Load Balancing',
+  'Rate Limiting',
+  'Token Mgmt',
+  'Prompt Caching',
+  'Pass-Through',
+  'requests served',
+  'AI models supported',
+  'uptime',
+  'active users',
+  'Lightning Fast',
+  'Optimized network architecture ensures millisecond response times',
+  'Secure & Reliable',
+  'Enterprise-grade security with comprehensive permission management',
+  'Global Coverage',
+  'Multi-region deployment for stable global access',
+  'Developer Friendly',
+  'Complete API documentation with multi-language SDK support',
+  'High Performance',
+  'Support for high concurrency with automatic load balancing',
+  'Transparent Billing',
+  'Pay-as-you-go with real-time usage monitoring',
+  'Team Collaboration',
+  'Multi-user management with flexible permission allocation',
+  'Technical Support',
+  'Professional team providing 24/7 technical support',
+
   // User management (interpolated keys)
   'Remaining Quota ({{currency}})',
   'Enter quota in tokens',
   'Enter quota in {{currency}}',
+
   // Setup wizard — steps
   'Database check',
   'Verify your database connection',
@@ -140,12 +186,14 @@ export const STATIC_I18N_KEYS = [
   'Choose how the platform will operate',
   'Review & initialize',
   'Confirm settings and finish setup',
+
   // Setup wizard — database step
-  'PostgreSQL is configured as the required database for this project.',
-  'This project now requires PostgreSQL. Update your database configuration before continuing.',
+  'SQLite stores all data in a single file. Make sure that file is persisted when running in containers.',
+  'MySQL is a production-ready relational database. Keep your credentials secure.',
+  'PostgreSQL offers advanced reliability and data integrity for production workloads.',
+  'Custom database driver detected.',
   'The setup wizard will use this database during initialization.',
-  'This setup flow is designed for PostgreSQL deployments.',
-  'Unsupported database configuration',
+
   // Setup wizard — usage mode step
   'External operations',
   'Serve multiple users or teams with billing and quota control.',
@@ -153,16 +201,20 @@ export const STATIC_I18N_KEYS = [
   'Best for single-tenant deployments. Pricing and billing options stay hidden.',
   'Demo site',
   'Showcase core capabilities with demo credentials and limited access.',
+
   // Setup wizard — complete step
   'External operations mode',
   'Personal use mode',
   'Demo site mode',
   'Existing account will be reused',
   'Not set yet',
+
   // Models section-registry nav (dynamic titleKey)
   'Grok',
+
   // Channel Affinity section
   'Channel Affinity',
+
   // Models constants
   'Exact Match',
   'Prefix Match',
@@ -203,6 +255,7 @@ export const STATIC_I18N_KEYS = [
   'Configuration File',
   'Sync from the public upstream metadata repository.',
   'Upload or reference a local configuration file.',
+
   // Subscription constants (dynamic labelKey)
   'years',
   'months',
@@ -215,6 +268,7 @@ export const STATIC_I18N_KEYS = [
   'Daily',
   'Weekly',
   'Monthly',
+
   // CC Switch dialog
   'Import to CC Switch',
   'Open CC Switch',
@@ -223,6 +277,7 @@ export const STATIC_I18N_KEYS = [
   'Sonnet Model',
   'Opus Model',
   'Enter model name',
+
   // User binding dialog
   'Account Binding Management',
   'Built-in',
@@ -230,6 +285,7 @@ export const STATIC_I18N_KEYS = [
   'Unbind',
   'Unbind failed',
   'This user has no bindings',
+
   // Subscription plans
   'Subscription Plans',
   'Subscribe Now',
@@ -256,6 +312,7 @@ export const STATIC_I18N_KEYS = [
   'Received',
   'Payment initiated',
   'Payment page opened',
+
   // Upstream model updates
   'Upstream Model Updates',
   'Sync Fields',
@@ -265,6 +322,7 @@ export const STATIC_I18N_KEYS = [
   'Partial Submission',
   'No models to add',
   'No models to remove',
+
   // Header manipulation
   'Pass Headers',
   'Set Header',
@@ -284,12 +342,14 @@ export const STATIC_I18N_KEYS = [
   'Return Error',
   'Param Override',
   'Override request parameters',
+
   // Profile / 2FA
   'Backed up',
   'Not backed up',
   'No backup',
   'Generate New Codes',
   'Audio Preview',
+
   // Status-code risk dialog
   'High-risk status code retry risk check 1',
   'High-risk status code retry risk check 2',
@@ -303,6 +363,7 @@ export const STATIC_I18N_KEYS = [
   'High-risk status code retry input placeholder',
   'High-risk status code retry input mismatch',
   'I confirm enabling high-risk retry',
+
   // Subscription management
   'Subscription Management',
   'Subscriptions',
@@ -362,6 +423,7 @@ export const STATIC_I18N_KEYS = [
   'Edit',
   'Disable',
   'Enable',
+
   // User subscription management
   'User Subscription Management',
   'Select subscription plan',
@@ -384,6 +446,7 @@ export const STATIC_I18N_KEYS = [
   'Deleted',
   'Validity',
   'Actions',
+
   // Sidebar modules
   'Chat Area',
   'Playground and chat functions',
@@ -433,6 +496,7 @@ export const STATIC_I18N_KEYS = [
   'Sidebar Personal Settings',
   'Customize sidebar display content',
   'Reset to Default',
+
   // Available models
   'Available Models',
   'View all currently available models',
@@ -442,6 +506,7 @@ export const STATIC_I18N_KEYS = [
   'Collapse',
   'No models available in this category',
   'Copied: {{model}}',
+
   // Grok settings
   'Grok Settings',
   'Enable violation deduction',
@@ -449,10 +514,12 @@ export const STATIC_I18N_KEYS = [
   'Official documentation',
   'Violation deduction amount',
   'Base amount. Actual deduction = base amount × system group rate.',
+
   // Chat2Link
   'No available Web chat links',
   'No enabled tokens available',
   'Redirecting to chat page...',
+
   // Channel upstream updates
   'No processable upstream model updates for this channel',
   'Upstream model updates applied: {{added}} added, {{removed}} removed, {{ignored}} ignored this time, {{totalIgnored}} total ignored models',
@@ -462,6 +529,7 @@ export const STATIC_I18N_KEYS = [
   'Detection complete: {{add}} to add, {{remove}} to remove',
   'Batch detection failed',
   'Batch detection complete: {{channels}} channels, {{add}} to add, {{remove}} to remove, {{fails}} failed',
+
   // Dashboard flow stages (labels/descriptions passed to t at runtime)
   'User',
   'Node',
@@ -475,6 +543,7 @@ export const STATIC_I18N_KEYS = [
   'The user group applied to the requests',
   'The model that was requested',
   'The upstream channel that served the requests',
+
   // Misc
   'Cancel',
   'Status',

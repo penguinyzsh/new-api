@@ -326,7 +326,7 @@ export function processChartData(
       const stats = timeModelMap.get(time)?.get(model)
       const rawQuota = Number(stats?.quota) || 0
       const usd = rawQuota ? rawQuota / quotaPerUnit : 0
-      // Keep the historical 4-decimal quota display.
+      // Match legacy frontend getQuotaWithUnit(..., 4)
       const usage = usd ? Number(usd.toFixed(4)) : 0
       return {
         Time: time,

@@ -20,8 +20,8 @@ import { ChevronDown, RotateCcw } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Button } from '@/components/design-system/button'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import {
   Collapsible,
   CollapsibleContent,
@@ -115,7 +115,7 @@ function FilterChip(props: {
       {(props.option.suffix || props.option.count != null) && (
         <span
           className={cn(
-            'rounded-md px-1.5 py-0.5 text-[10px]',
+            'rounded-md px-1.5 py-0.5 text-xs',
             props.active
               ? 'bg-background text-foreground'
               : 'bg-muted text-muted-foreground'
@@ -260,7 +260,6 @@ export function PricingSidebar(props: PricingSidebarProps) {
           size='sm'
           onClick={props.onClearFilters}
           disabled={!props.hasActiveFilters}
-          className='h-7 gap-1.5 px-2 text-xs'
         >
           <RotateCcw className='size-3.5' />
           {t('Reset')}

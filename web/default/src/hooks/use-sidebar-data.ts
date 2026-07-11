@@ -36,7 +36,7 @@ import {
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import type { SidebarData } from '@/components/layout/types'
+import { type SidebarData } from '@/components/layout/types'
 import { ROLE } from '@/lib/roles'
 
 /**
@@ -55,14 +55,14 @@ export function useSidebarData(): SidebarData {
         title: t('Chat'),
         items: [
           {
-            title: t('Chat'),
-            icon: MessageSquare,
-            type: 'chat-presets',
-          },
-          {
             title: t('Playground'),
             url: '/playground',
             icon: FlaskConical,
+          },
+          {
+            title: t('Chat'),
+            icon: MessageSquare,
+            type: 'chat-presets',
           },
         ],
       },
@@ -81,6 +81,11 @@ export function useSidebarData(): SidebarData {
             icon: LayoutDashboard,
           },
           {
+            title: t('API Keys'),
+            url: '/keys',
+            icon: Key,
+          },
+          {
             title: t('Usage Logs'),
             url: '/usage-logs/common',
             icon: FileText,
@@ -91,11 +96,6 @@ export function useSidebarData(): SidebarData {
             activeUrls: ['/usage-logs/drawing'],
             configUrls: ['/usage-logs/drawing', '/usage-logs/task'],
             icon: ListTodo,
-          },
-          {
-            title: t('API Keys'),
-            url: '/keys',
-            icon: Key,
           },
         ],
       },
@@ -120,19 +120,9 @@ export function useSidebarData(): SidebarData {
         title: t('Admin'),
         items: [
           {
-            title: t('Users'),
-            url: '/users',
-            icon: Users,
-          },
-          {
-            title: t('Subscriptions'),
-            url: '/subscriptions',
-            icon: CreditCard,
-          },
-          {
-            title: t('Redemption Codes'),
-            url: '/redemption-codes',
-            icon: Ticket,
+            title: t('Channels'),
+            url: '/channels',
+            icon: Radio,
           },
           {
             title: t('Models'),
@@ -140,9 +130,19 @@ export function useSidebarData(): SidebarData {
             icon: Box,
           },
           {
-            title: t('Channels'),
-            url: '/channels',
-            icon: Radio,
+            title: t('Users'),
+            url: '/users',
+            icon: Users,
+          },
+          {
+            title: t('Redemption Codes'),
+            url: '/redemption-codes',
+            icon: Ticket,
+          },
+          {
+            title: t('Subscriptions'),
+            url: '/subscriptions',
+            icon: CreditCard,
           },
           {
             title: t('System Info'),

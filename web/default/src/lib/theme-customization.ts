@@ -80,7 +80,9 @@ export const THEME_PRESETS = [
 ] as const
 
 export type ThemePreset = (typeof THEME_PRESETS)[number]['value']
-export type ThemeRadius = 'default' | 'lg' | 'xl'
+export type ThemeRadius = 'default' | 'none' | 'sm' | 'md' | 'lg' | 'xl'
+export type ThemeScale = 'default' | 'sm' | 'lg' | 'xl'
+export type ContentLayout = 'full' | 'centered'
 
 /**
  * Font axis for the theme.
@@ -109,12 +111,16 @@ export type ThemeCustomization = {
   preset: ThemePreset
   font: ThemeFont
   radius: ThemeRadius
+  scale: ThemeScale
+  contentLayout: ContentLayout
 }
 
 export const DEFAULT_THEME_CUSTOMIZATION: ThemeCustomization = {
   preset: 'default',
   font: 'default',
   radius: 'default',
+  scale: 'default',
+  contentLayout: 'full',
 }
 
 export const THEME_PRESET_VALUES = new Set(
@@ -129,14 +135,31 @@ export const THEME_FONT_VALUES: ReadonlySet<ThemeFont> = new Set([
 
 export const THEME_RADIUS_VALUES: ReadonlySet<ThemeRadius> = new Set([
   'default',
+  'none',
+  'sm',
+  'md',
   'lg',
   'xl',
+])
+
+export const THEME_SCALE_VALUES: ReadonlySet<ThemeScale> = new Set([
+  'default',
+  'sm',
+  'lg',
+  'xl',
+])
+
+export const CONTENT_LAYOUT_VALUES: ReadonlySet<ContentLayout> = new Set([
+  'full',
+  'centered',
 ])
 
 export const THEME_COOKIE_KEYS = {
   preset: 'theme_preset',
   font: 'theme_font',
   radius: 'theme_radius',
+  scale: 'theme_scale',
+  contentLayout: 'theme_content_layout',
 } as const
 
 /**

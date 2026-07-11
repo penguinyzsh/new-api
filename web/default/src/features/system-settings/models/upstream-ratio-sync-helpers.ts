@@ -231,9 +231,19 @@ function applyResolutionSelectionToDraft(
   selection: ResolutionSelection
 ) {
   const modelDiffs = differences[selection.model]
-  const resolved = resolveResolutionSelection(differences, selection)
-  const finalType = resolved.ratioType
-  const finalValue = resolved.value
+  const preferredType = getPreferredSyncField(
+    modelDiffs || {},
+    selection.ratioType,
+    selection.sourceName
+  )
+  const preferredValue =
+    preferredType === selection.ratioType
+      ? selection.value
+      : (modelDiffs?.[preferredType]?.upstreams?.[selection.sourceName] ??
+        selection.value)
+
+  const finalType = preferredType
+  const finalValue = preferredValue as number | string
   const category = getBillingCategory(finalType)
   const newModelRes = getDraftModelResolution(
     drafts,

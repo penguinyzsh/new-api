@@ -20,7 +20,7 @@ import type { Row } from '@tanstack/react-table'
 import { Pencil, Power, PowerOff, RotateCcw } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/design-system/button'
 import {
   Tooltip,
   TooltipContent,
@@ -36,7 +36,7 @@ interface DataTableRowActionsProps {
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const { t } = useTranslation()
-  const { setOpen, setCurrentRow } = useSubscriptions()
+  const { setOpen, setCurrentRow, complianceConfirmed } = useSubscriptions()
   const isEnabled = row.original.plan.enabled
   const toggleLabel = isEnabled ? t('Disable') : t('Enable')
 
@@ -63,6 +63,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             <Button
               variant='ghost'
               size='icon-sm'
+              disabled={!complianceConfirmed}
               onClick={handleEdit}
               aria-label={t('Edit')}
             />
@@ -79,6 +80,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             <Button
               variant='ghost'
               size='icon-sm'
+              disabled={!complianceConfirmed}
               onClick={handleResetSubscriptions}
               aria-label={t('Reset subscription quota')}
             />
@@ -95,6 +97,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
             <Button
               variant='ghost'
               size='icon-sm'
+              disabled={!complianceConfirmed}
               onClick={handleToggleStatus}
               aria-label={toggleLabel}
               className={

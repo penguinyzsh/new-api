@@ -224,11 +224,15 @@ function isLikelyUntranslated({ locale, baseValue, value }) {
   if (s.length < 6) return false
   if (!/[A-Za-z]{3,}/.test(s)) return false
 
-  // For Chinese, equality with EN is a strong signal.
-  if (locale === 'zh') return true
+  // For locales with non-latin scripts, equality with EN is a strong signal.
+  if (locale === 'ja' || locale === 'zh') return true
+  if (locale === 'ru') return true
 
-  // For other future locales, keep the heuristic conservative.
-  return /\b(the|and|or|to|with|please)\b/i.test(s)
+  // For fr/vi: still useful but noisier; keep it conservative.
+  if (locale === 'fr' || locale === 'vi')
+    return /\b(the|and|or|to|with|please)\b/i.test(s)
+
+  return false
 }
 
 async function main() {

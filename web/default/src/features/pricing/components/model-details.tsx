@@ -35,10 +35,16 @@ import { useTranslation } from 'react-i18next'
 
 import { CopyButton } from '@/components/copy-button'
 import { StaticDataTable } from '@/components/data-table'
+import { Button } from '@/components/design-system/button'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/design-system/tabs'
 import { sideDrawerContentClassName } from '@/components/drawer-layout'
 import { GroupBadge } from '@/components/group-badge'
 import { PublicLayout } from '@/components/layout'
-import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -47,7 +53,6 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getPerfMetrics } from '@/features/performance-metrics/api'
 import {
   formatLatency,
@@ -156,12 +161,12 @@ function OverviewMetric(props: {
     <div className='flex min-w-0 items-center gap-2 px-3 py-2'>
       <Icon className='text-muted-foreground/70 size-3.5 shrink-0' />
       <div className='min-w-0 flex-1'>
-        <div className='text-muted-foreground truncate text-[10px] font-medium tracking-wider uppercase'>
+        <div className='text-muted-foreground truncate text-xs font-medium tracking-wider uppercase'>
           {props.label}
         </div>
         <div
           className={cn(
-            'text-foreground truncate font-mono text-sm font-semibold tabular-nums',
+            'text-foreground truncate text-sm font-semibold tabular-nums',
             props.valueClassName
           )}
         >
@@ -254,7 +259,7 @@ function CatalogTextValue(props: { children: React.ReactNode }) {
 function CatalogInfoCell(props: { label: string; children: React.ReactNode }) {
   return (
     <div className='bg-card flex min-w-0 flex-col gap-1 px-3 py-2.5'>
-      <span className='text-muted-foreground text-[10px] font-medium tracking-wider uppercase'>
+      <span className='text-muted-foreground text-xs font-medium tracking-wider uppercase'>
         {props.label}
       </span>
       {props.children}
@@ -361,7 +366,7 @@ function ModelBackendQuickStats(props: { model: PricingModel }) {
             key={stat.key}
             className='bg-background flex min-w-0 flex-col gap-0.5 px-3 py-2.5'
           >
-            <span className='text-muted-foreground inline-flex min-w-0 items-center gap-1 text-[10px] font-medium tracking-wider uppercase'>
+            <span className='text-muted-foreground inline-flex min-w-0 items-center gap-1 text-xs font-medium tracking-wider uppercase'>
               <Icon className='size-3 shrink-0' />
               <span className='truncate'>{stat.label}</span>
             </span>
@@ -369,7 +374,7 @@ function ModelBackendQuickStats(props: { model: PricingModel }) {
               {stat.value}
             </span>
             {stat.hint && (
-              <span className='text-muted-foreground/60 truncate text-[10px]'>
+              <span className='text-muted-foreground/60 truncate text-xs'>
                 {stat.hint}
               </span>
             )}
@@ -545,7 +550,7 @@ function ModelHeader(props: { model: PricingModel }) {
         </h1>
         <CopyButton
           value={model.model_name || ''}
-          className='size-6'
+          size='icon-xs'
           iconClassName='size-3'
           tooltip={t('Copy model name')}
           successTooltip={t('Copied!')}
@@ -565,7 +570,7 @@ function ModelHeader(props: { model: PricingModel }) {
         {model.billing_mode === 'tiered_expr' && model.billing_expr && (
           <>
             <span className='text-muted-foreground/30'>·</span>
-            <span className='rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-500/20 dark:text-amber-300'>
+            <span className='bg-warning/15 text-warning rounded px-1.5 py-0.5 text-xs font-medium'>
               {isSpecialExpression
                 ? t('Special billing expression')
                 : t('Dynamic Pricing')}
@@ -649,15 +654,15 @@ function PriceSection(props: {
       return (
         <section>
           <SectionTitle>{t('Base Price')}</SectionTitle>
-          <div className='rounded-lg border border-amber-200/70 bg-amber-50/70 p-3 dark:border-amber-500/20 dark:bg-amber-500/10'>
-            <div className='text-sm font-medium text-amber-800 dark:text-amber-200'>
+          <div className='border-warning/30 bg-warning/10 rounded-lg border p-3'>
+            <div className='text-warning text-sm font-medium'>
               {t('Special billing expression')}
             </div>
             <p className='text-muted-foreground mt-1 text-xs'>
               {t('Unable to parse structured pricing')}
             </p>
             <div className='mt-3'>
-              <div className='text-muted-foreground mb-1 text-[10px] font-medium tracking-wider uppercase'>
+              <div className='text-muted-foreground mb-1 text-xs font-medium tracking-wider uppercase'>
                 {t('Raw expression')}
               </div>
               <code className='text-muted-foreground bg-background/80 block max-h-28 overflow-auto rounded-md border px-2 py-1.5 font-mono text-xs break-all'>
@@ -682,7 +687,7 @@ function PriceSection(props: {
                 <div className='text-muted-foreground text-xs'>
                   {t(entry.shortLabel)}
                 </div>
-                <div className='text-foreground mt-1 font-mono text-base font-semibold tabular-nums'>
+                <div className='text-foreground mt-1 text-base font-semibold tabular-nums'>
                   {entry.formatted}
                   <span className='text-muted-foreground/40 ml-1 text-xs font-normal'>
                     / {tokenUnitLabel}
@@ -707,7 +712,7 @@ function PriceSection(props: {
                   <span className='text-muted-foreground/70 text-sm'>
                     {t(entry.shortLabel)}
                   </span>
-                  <span className='text-muted-foreground font-mono text-sm tabular-nums'>
+                  <span className='text-muted-foreground text-sm tabular-nums'>
                     {entry.formatted}
                     <span className='text-muted-foreground/40 ml-1 text-xs font-normal'>
                       / {tokenUnitLabel}
@@ -730,7 +735,7 @@ function PriceSection(props: {
           <span className='text-muted-foreground text-sm'>
             {t('Per request')}
           </span>
-          <span className='text-foreground font-mono text-sm font-semibold tabular-nums'>
+          <span className='text-foreground text-sm font-semibold tabular-nums'>
             {formatFixedPrice(
               props.model,
               baseGroupKey,
@@ -771,7 +776,7 @@ function PriceSection(props: {
         {primaryPriceTypes.map((item) => (
           <div key={item.type} className='bg-muted/20 rounded-lg border p-3'>
             <div className='text-muted-foreground text-xs'>{item.label}</div>
-            <div className='text-foreground mt-1 font-mono text-base font-semibold tabular-nums'>
+            <div className='text-foreground mt-1 text-base font-semibold tabular-nums'>
               {renderPrice(item.type)}
             </div>
           </div>
@@ -788,7 +793,7 @@ function PriceSection(props: {
                 <span className='text-muted-foreground/70 text-sm'>
                   {item.label}
                 </span>
-                <span className='text-muted-foreground font-mono text-sm tabular-nums'>
+                <span className='text-muted-foreground text-sm tabular-nums'>
                   {renderPrice(item.type)}
                 </span>
               </div>
@@ -923,7 +928,7 @@ function GroupPricingSection(props: {
   }
 
   const thClass =
-    'text-muted-foreground py-2 text-[10px] font-medium tracking-wider uppercase'
+    'text-muted-foreground py-2 text-xs font-medium tracking-wider uppercase'
 
   if (isDynamicPricingModel(props.model)) {
     const dynamicTiers = getDynamicPricingTiers(props.model)
@@ -933,8 +938,8 @@ function GroupPricingSection(props: {
         <section>
           <SectionTitle>{t('Pricing by Group')}</SectionTitle>
           <AutoGroupChain model={props.model} autoGroups={props.autoGroups} />
-          <div className='rounded-lg border border-amber-200/70 bg-amber-50/70 p-3 dark:border-amber-500/20 dark:bg-amber-500/10'>
-            <div className='text-sm font-medium text-amber-800 dark:text-amber-200'>
+          <div className='border-warning/30 bg-warning/10 rounded-lg border p-3'>
+            <div className='text-warning text-sm font-medium'>
               {t('Special billing expression')}
             </div>
             <p className='text-muted-foreground mt-1 text-xs'>
@@ -943,7 +948,7 @@ function GroupPricingSection(props: {
               )}
             </p>
             <div className='mt-3'>
-              <div className='text-muted-foreground mb-1 text-[10px] font-medium tracking-wider uppercase'>
+              <div className='text-muted-foreground mb-1 text-xs font-medium tracking-wider uppercase'>
                 {t('Raw expression')}
               </div>
               <code className='text-muted-foreground bg-background/80 block max-h-28 overflow-auto rounded-md border px-2 py-1.5 font-mono text-xs break-all'>
@@ -1028,7 +1033,7 @@ function GroupPricingSection(props: {
               </div>
             )
           })}
-          <p className='text-muted-foreground/40 mt-1.5 text-[10px]'>
+          <p className='text-muted-foreground/40 mt-1.5 text-xs'>
             {t('Prices shown per')} {tokenUnitLabel} tokens
           </p>
         </div>
@@ -1119,7 +1124,7 @@ function GroupPricingSection(props: {
       />
       <div className='-mx-4 sm:mx-0'>
         {isTokenBased && (
-          <p className='text-muted-foreground/40 mt-1.5 px-4 text-[10px] sm:px-0'>
+          <p className='text-muted-foreground/40 mt-1.5 px-4 text-xs sm:px-0'>
             {t('Prices shown per')} {tokenUnitLabel} tokens
           </p>
         )}
@@ -1165,7 +1170,7 @@ export function ModelDetailsContent(props: ModelDetailsContentProps) {
       <ModelHeader model={props.model} />
 
       <Tabs defaultValue='overview' className='gap-4'>
-        <TabsList className='bg-muted/60 grid w-full grid-cols-3 gap-1 rounded-lg p-1 group-data-horizontal/tabs:h-auto'>
+        <TabsList className='bg-muted/60 grid w-full grid-cols-3 gap-1 rounded-lg p-1 group-data-horizontal/tabs:h-auto sm:group-data-horizontal/tabs:h-auto'>
           {TAB_VALUES.map((value) => {
             const Icon = TAB_META[value].icon
             return (
@@ -1323,7 +1328,7 @@ export function ModelDetails() {
           <p className='text-muted-foreground mb-4 text-sm'>
             {t("The model you're looking for doesn't exist.")}
           </p>
-          <Button onClick={handleBack} variant='outline' size='sm'>
+          <Button onClick={handleBack} variant='outline'>
             {t('Back to Models')}
           </Button>
         </div>
@@ -1336,9 +1341,8 @@ export function ModelDetails() {
       <div className='mx-auto max-w-5xl px-4 sm:px-6'>
         <Button
           variant='ghost'
-          size='sm'
           onClick={handleBack}
-          className='text-muted-foreground hover:text-foreground mb-4 h-auto gap-1 px-0 py-1 text-xs'
+          className='text-muted-foreground hover:text-foreground mb-4 h-auto gap-1 px-0 py-1 text-xs sm:h-auto'
         >
           <ArrowLeft className='size-3.5' />
           {t('Back')}

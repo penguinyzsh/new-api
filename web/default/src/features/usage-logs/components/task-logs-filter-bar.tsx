@@ -18,7 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { useQueryClient, useIsFetching } from '@tanstack/react-query'
 import { useNavigate, getRouteApi } from '@tanstack/react-router'
-import type { Table } from '@tanstack/react-table'
+import { type Table } from '@tanstack/react-table'
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -167,7 +167,7 @@ export function TaskLogsFilterBar<TData>(props: TaskLogsFilterBarProps<TData>) {
       : t('Filter by task ID')
   const hasAdditionalFilters = !!filterValue || !!filters.channel
   const dateRangeFilter = (
-    <LogsFilterField>
+    <LogsFilterField wide>
       <CompactDateTimeRangePicker
         start={filters.startTime}
         end={filters.endTime}
@@ -203,7 +203,6 @@ export function TaskLogsFilterBar<TData>(props: TaskLogsFilterBarProps<TData>) {
   return (
     <LogsFilterToolbar
       table={props.table}
-      actionsInline
       primaryFilters={
         <>
           {dateRangeFilter}

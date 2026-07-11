@@ -290,7 +290,7 @@ export type QuotaType = 0 | 1 // usage-based, per-call
 /**
  * Sync locale
  */
-export type SyncLocale = 'zh' | 'en'
+export type SyncLocale = 'zh' | 'en' | 'ja'
 
 /**
  * Sync upstream source
