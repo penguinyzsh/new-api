@@ -32,11 +32,8 @@ export function SignIn() {
   const { status } = useStatus()
 
   return (
-    <AuthLayout
-      className='bg-muted/40'
-      contentClassName='sm:w-full sm:max-w-4xl sm:p-6 md:p-10'
-    >
-      <Card className='overflow-hidden p-0'>
+    <AuthLayout contentClassName='sm:w-full sm:max-w-4xl sm:p-6 md:p-10'>
+      <Card className='bg-background/82 overflow-hidden border-white/30 p-0 shadow-2xl backdrop-blur-xl dark:border-white/10'>
         <CardContent className='grid p-0 md:grid-cols-2'>
           <div className='flex flex-col gap-8 p-6 md:p-8'>
             <div className='flex flex-col gap-2'>
@@ -66,8 +63,8 @@ export function SignIn() {
               className='text-center'
             />
           </div>
-          <div className='bg-muted relative hidden min-h-[560px] overflow-hidden md:block'>
-            <div className='from-primary/10 to-primary/5 absolute inset-0 bg-gradient-to-br via-transparent' />
+          <div className='relative hidden min-h-[560px] overflow-hidden border-l border-white/20 md:block dark:border-white/10'>
+            <div className='from-primary/20 to-primary/5 absolute inset-0 bg-gradient-to-br via-white/10' />
           </div>
         </CardContent>
       </Card>

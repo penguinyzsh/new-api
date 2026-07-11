@@ -16,11 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { Link } from '@tanstack/react-router'
-import { useTranslation } from 'react-i18next'
-
-import { Skeleton } from '@/components/ui/skeleton'
-import { useSystemConfig } from '@/hooks/use-system-config'
+import { PublicLayout } from '@/components/layout'
+import { PublicPrismBackground } from '@/components/layout/components/public-prism-background'
 import { cn } from '@/lib/utils'
 
 type AuthLayoutProps = {
@@ -30,47 +27,26 @@ type AuthLayoutProps = {
 }
 
 export function AuthLayout(props: AuthLayoutProps) {
-  const { t } = useTranslation()
-  const { systemName, logo, loading } = useSystemConfig()
-
   return (
-    <div className='relative grid h-svh max-w-none'>
-      <Link
-        to='/'
-        className='absolute top-4 left-4 z-10 flex items-center gap-2 transition-opacity hover:opacity-80 sm:top-8 sm:left-8'
-      >
-        <div className='relative h-8 w-8'>
-          {loading ? (
-            <Skeleton className='absolute inset-0 rounded-full' />
-          ) : (
-            <img
-              src={logo}
-              alt={t('Logo')}
-              className='h-8 w-8 rounded-full object-cover'
-            />
-          )}
-        </div>
-        {loading ? (
-          <Skeleton className='h-6 w-24' />
-        ) : (
-          <h1 className='text-xl font-medium'>{systemName}</h1>
-        )}
-      </Link>
-      <div
-        className={cn(
-          'flex w-full items-center pt-16 sm:pt-0',
-          props.className
-        )}
-      >
+    <PublicLayout showMainContainer={false} showAuthButtons={false}>
+      <main className='relative isolate flex min-h-svh overflow-hidden bg-white transition-colors dark:bg-[#0d0c13]'>
+        <PublicPrismBackground className='opacity-75 dark:opacity-40' />
         <div
           className={cn(
-            'mx-auto flex w-full flex-col justify-center gap-2 px-4 py-8 sm:w-[480px] sm:p-8',
-            props.contentClassName
+            'flex w-full items-center pt-20 sm:pt-16',
+            props.className
           )}
         >
-          {props.children}
+          <div
+            className={cn(
+              'mx-auto flex w-full flex-col justify-center gap-2 px-4 py-8 sm:w-[480px] sm:p-8',
+              props.contentClassName
+            )}
+          >
+            {props.children}
+          </div>
         </div>
-      </div>
-    </div>
+      </main>
+    </PublicLayout>
   )
 }
