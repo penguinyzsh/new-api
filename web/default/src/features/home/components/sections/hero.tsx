@@ -16,56 +16,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { Link } from '@tanstack/react-router'
-import { BookOpen } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/components/ui/button'
-import { useStatus } from '@/hooks/use-status'
 import { cn } from '@/lib/utils'
-
-import { HeroTerminalDemo } from '../hero-terminal-demo'
 
 interface HeroProps {
   className?: string
-  isAuthenticated?: boolean
 }
 
 export function Hero(props: HeroProps) {
   const { t } = useTranslation()
-  const { status } = useStatus()
-  const docsUrl =
-    (status?.docs_link as string | undefined) || 'https://docs.newapi.pro'
-
-  const renderDocsButton = () => {
-    const isExternal = docsUrl.startsWith('http')
-    if (isExternal) {
-      return (
-        <Button
-          nativeButton={false}
-          variant='outline'
-          className='group border-border/50 hover:border-border hover:bg-muted/50 inline-flex h-11 items-center gap-1.5 rounded-lg px-5 text-sm font-medium'
-          render={
-            <a href={docsUrl} target='_blank' rel='noopener noreferrer' />
-          }
-        >
-          <BookOpen className='text-muted-foreground/80 group-hover:text-foreground size-4 transition-colors duration-200' />
-          <span>{t('Docs')}</span>
-        </Button>
-      )
-    }
-    return (
-      <Button
-        nativeButton={false}
-        variant='outline'
-        className='group border-border/50 hover:border-border hover:bg-muted/50 inline-flex h-11 items-center gap-1.5 rounded-lg px-5 text-sm font-medium'
-        render={<Link to={docsUrl} />}
-      >
-        <BookOpen className='text-muted-foreground/80 group-hover:text-foreground size-4 transition-colors duration-200' />
-        <span>{t('Docs')}</span>
-      </Button>
-    )
-  }
 
   return (
     <section
@@ -92,22 +52,21 @@ export function Hero(props: HeroProps) {
         className='absolute inset-0 -z-10 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_30%,black_20%,transparent_100%)] bg-[size:4rem_4rem] opacity-[0.08]'
       />
 
-      <div className='mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-8'>
-        {/* Left Column: Title, description, action buttons */}
-        <div className='flex flex-col items-start text-left lg:col-span-6'>
-          <div>
+      <div className='mx-auto flex w-full max-w-6xl flex-col items-center gap-12'>
+        {/* Title, description, action buttons */}
+        <div className='flex w-full flex-col items-start text-left'>
+          <div className='w-full'>
             <h1
-              className='landing-animate-fade-up text-[clamp(2.25rem,4.5vw,3.25rem)] leading-[1.15] font-bold tracking-tight'
+              className='landing-animate-fade-up text-[clamp(2.25rem,4.5vw,3.25rem)] leading-[1.15] font-bold tracking-tight lg:whitespace-nowrap'
               style={{ animationDelay: '0ms' }}
             >
-              {t('Unified API Gateway for')}
-              <br />
+              {t('Unified API Gateway for')}{' '}
               <span className='bg-gradient-to-r from-blue-400 via-violet-400 to-purple-500 bg-clip-text text-transparent'>
                 {t('Vast Range of AI Models')}
               </span>
             </h1>
             <p
-              className='landing-animate-fade-up text-muted-foreground/80 mt-5 max-w-xl text-base leading-relaxed opacity-0 md:text-[15px]'
+              className='landing-animate-fade-up text-muted-foreground/80 mt-5 text-base leading-relaxed opacity-0 md:text-[15px] lg:whitespace-nowrap'
               style={{ animationDelay: '60ms' }}
             >
               {t(
@@ -115,43 +74,6 @@ export function Hero(props: HeroProps) {
               )}
             </p>
           </div>
-
-          <div
-            className='landing-animate-fade-up mt-8 flex flex-wrap items-center gap-3 opacity-0'
-            style={{ animationDelay: '120ms' }}
-          >
-            {props.isAuthenticated ? (
-              <>
-                <Button
-                  nativeButton={false}
-                  className='group h-11 rounded-lg px-5 text-sm font-medium'
-                  render={<Link to='/dashboard' />}
-                >
-                  {t('Go to Dashboard')}
-                </Button>
-                {renderDocsButton()}
-              </>
-            ) : (
-              <>
-                <Button
-                  nativeButton={false}
-                  className='group h-11 rounded-lg px-5 text-sm font-medium'
-                  render={<Link to='/sign-up' />}
-                >
-                  {t('Get Started')}
-                </Button>
-                {renderDocsButton()}
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Right Column: Hero Terminal API Demo */}
-        <div
-          className='landing-animate-fade-up flex w-full items-start justify-center opacity-0 lg:col-span-6'
-          style={{ animationDelay: '180ms' }}
-        >
-          <HeroTerminalDemo />
         </div>
       </div>
     </section>
