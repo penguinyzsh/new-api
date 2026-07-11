@@ -28,7 +28,7 @@ type AuthLayoutProps = {
 
 export function AuthLayout(props: AuthLayoutProps) {
   return (
-    <PublicLayout showMainContainer={false} showAuthButtons={false}>
+    <PublicLayout showMainContainer={false}>
       <main className='relative isolate flex min-h-svh overflow-hidden bg-white transition-colors dark:bg-[#0d0c13]'>
         <PublicPrismBackground className='opacity-75 dark:opacity-40' />
         <div

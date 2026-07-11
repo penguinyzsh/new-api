@@ -65,7 +65,7 @@ export function AuthDialog(props: AuthDialogProps) {
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className='bg-background text-foreground ring-border max-h-[calc(100svh-2rem)] overflow-y-auto border-0 p-0 shadow-2xl ring-1 sm:max-w-4xl'>
+      <DialogContent className='bg-background text-foreground ring-border data-open:slide-in-from-bottom-3 data-closed:slide-out-to-bottom-2 max-h-[calc(100svh-2rem)] overflow-y-auto border-0 p-0 shadow-2xl ring-1 duration-200 ease-out data-closed:ease-in motion-reduce:animate-none sm:max-w-4xl'>
         <DialogHeader className='sr-only'>
           <DialogTitle>
             {isSignIn ? t('Sign in') : t('Create an account')}

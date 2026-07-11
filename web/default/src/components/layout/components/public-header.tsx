@@ -31,7 +31,6 @@ import { useNotifications } from '@/hooks/use-notifications'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { useTopNavLinks } from '@/hooks/use-top-nav-links'
 import { cn } from '@/lib/utils'
-import { useAuthStore } from '@/stores/auth-store'
 
 import { defaultTopNavLinks } from '../config/top-nav.config'
 import type { TopNavLink } from '../types'
@@ -61,7 +60,6 @@ export interface PublicHeaderProps {
   leftContent?: React.ReactNode
   rightContent?: React.ReactNode
   showNavigation?: boolean
-  showAuthButtons?: boolean
   showNotifications?: boolean
   className?: string
 }
@@ -74,7 +72,6 @@ export function PublicHeader(props: PublicHeaderProps) {
     logo: customLogo,
     siteName: customSiteName,
     homeUrl = '/',
-    showAuthButtons = true,
     showNotifications = true,
   } = props
 
@@ -86,7 +83,6 @@ export function PublicHeader(props: PublicHeaderProps) {
     useState<AuthPromptTarget | null>(null)
   const [authPromptSecondsLeft, setAuthPromptSecondsLeft] =
     useState(AUTH_PROMPT_SECONDS)
-  const { auth } = useAuthStore()
   const {
     systemName,
     logo: systemLogo,
@@ -106,15 +102,18 @@ export function PublicHeader(props: PublicHeaderProps) {
     (locationSearch.auth === 'sign-in' || locationSearch.auth === 'sign-up')
       ? locationSearch.auth
       : null
+  const [authDialogMounted, setAuthDialogMounted] = useState(
+    authDialogMode !== null
+  )
   const authRedirect =
     typeof locationSearch.redirect === 'string'
       ? locationSearch.redirect
       : undefined
 
-  const user = auth.user
-  const isAuthenticated = !!user
   const displaySiteName = customSiteName || systemName
-  const links = dynamicLinks.length > 0 ? dynamicLinks : navLinks
+  const links = (dynamicLinks.length > 0 ? dynamicLinks : navLinks).filter(
+    (link) => link.href !== '/'
+  )
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -129,6 +128,12 @@ export function PublicHeader(props: PublicHeaderProps) {
       document.body.style.overflow = ''
     }
   }, [mobileOpen])
+
+  useEffect(() => {
+    if (authDialogMode) {
+      setAuthDialogMounted(true)
+    }
+  }, [authDialogMode])
 
   useEffect(() => {
     if (!authPromptTarget) return
@@ -163,17 +168,6 @@ export function PublicHeader(props: PublicHeaderProps) {
     navigate({ to: '/', search: { auth: 'sign-in', redirect } })
   }, [authPromptTarget?.href, navigate])
 
-  const openAuthDialog = useCallback(
-    (mode: AuthMode) => {
-      setMobileOpen(false)
-      navigate({
-        to: '/',
-        search: { auth: mode },
-      })
-    },
-    [navigate]
-  )
-
   const closeAuthDialog = useCallback(() => {
     navigate({ to: '/', search: {}, replace: true })
   }, [navigate])
@@ -202,24 +196,6 @@ export function PublicHeader(props: PublicHeaderProps) {
   }
   if (loading) {
     logoContent = <Skeleton className='size-full rounded-lg' />
-  }
-
-  let desktopAuthControl: React.ReactNode = null
-  if (showAuthButtons && loading) {
-    desktopAuthControl = <Skeleton className='h-8 w-20 rounded-lg' />
-  } else if (showAuthButtons && !isAuthenticated) {
-    desktopAuthControl = (
-      <>
-        <div className='bg-border/40 mx-1 h-4 w-px' />
-        <Button
-          size='sm'
-          className='h-8 rounded-lg px-3.5 text-xs font-medium'
-          onClick={() => openAuthDialog('sign-in')}
-        >
-          {t('Sign in')}
-        </Button>
-      </>
-    )
   }
 
   const handleNavLinkClick = useCallback(
@@ -347,8 +323,6 @@ export function PublicHeader(props: PublicHeaderProps) {
                   loading={notifications.loading}
                 />
               )}
-
-              {desktopAuthControl}
             </div>
 
             {/* Mobile: compact actions + hamburger */}
@@ -443,33 +417,6 @@ export function PublicHeader(props: PublicHeaderProps) {
               )
             })}
           </nav>
-
-          <div
-            className={cn(
-              'flex flex-col gap-3 transition-all duration-500',
-              mobileOpen
-                ? 'translate-y-0 opacity-100'
-                : 'translate-y-4 opacity-0'
-            )}
-            style={{ transitionDelay: mobileOpen ? '250ms' : '0ms' }}
-          >
-            {showAuthButtons && (
-              <button
-                type='button'
-                onClick={() => {
-                  if (isAuthenticated) {
-                    setMobileOpen(false)
-                    navigate({ to: '/dashboard' })
-                    return
-                  }
-                  openAuthDialog('sign-in')
-                }}
-                className='bg-foreground text-background inline-flex h-10 items-center justify-center rounded-lg text-sm font-medium transition-opacity hover:opacity-90 active:opacity-80'
-              >
-                {isAuthenticated ? t('Go to Dashboard') : t('Sign in')}
-              </button>
-            )}
-          </div>
         </div>
       </div>
 
@@ -502,11 +449,11 @@ export function PublicHeader(props: PublicHeaderProps) {
         </div>
       </Dialog>
 
-      {authDialogMode && (
+      {authDialogMounted && (
         <Suspense fallback={null}>
           <AuthDialog
-            open
-            mode={authDialogMode}
+            open={authDialogMode !== null}
+            mode={authDialogMode ?? 'sign-in'}
             redirectTo={authRedirect}
             onModeChange={changeAuthMode}
             onOpenChange={(open) => {

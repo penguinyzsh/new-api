@@ -21,8 +21,10 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import {
   Sidebar,
   SidebarContent,
+  SidebarHeader,
   SidebarRail,
 } from '@/components/design-system/sidebar'
+import { Search } from '@/components/search'
 import { useLayout } from '@/context/layout-provider'
 import { useSidebarView } from '@/hooks/use-sidebar-view'
 import { MOTION_TRANSITION, MOTION_VARIANTS } from '@/lib/motion'
@@ -54,7 +56,11 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible={collapsible} variant={variant}>
-      <SidebarContent className='py-2 md:pt-[calc(var(--app-header-height,3rem)+0.5rem)]'>
+      <SidebarHeader className='group-data-[collapsible=icon]:hidden'>
+        <Search className='w-full sm:w-full lg:w-full xl:w-full' />
+      </SidebarHeader>
+
+      <SidebarContent className='py-2'>
         <AnimatePresence mode='wait' initial={false}>
           <motion.div
             key={key}

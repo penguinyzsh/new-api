@@ -19,14 +19,12 @@ For commercial licensing, please contact support@quantumnous.com
 import { ConfigDrawer } from '@/components/config-drawer'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { NotificationPopover } from '@/components/notification-popover'
-import { Search } from '@/components/search'
 import { useNotifications } from '@/hooks/use-notifications'
 import { useTopNavLinks } from '@/hooks/use-top-nav-links'
 
 import { defaultTopNavLinks } from '../config/top-nav.config'
 import type { TopNavLink } from '../types'
 import { Header } from './header'
-import { SystemBrand } from './system-brand'
 import { TopNav } from './top-nav'
 
 /**
@@ -42,8 +40,8 @@ import { TopNav } from './top-nav'
  * <AppHeader navLinks={customLinks} />
  *
  * @example
- * // Hide navigation bar and search box
- * <AppHeader showTopNav={false} showSearch={false} />
+ * // Hide navigation bar
+ * <AppHeader showTopNav={false} />
  *
  * @example
  * // Fully customize left and right content
@@ -67,11 +65,6 @@ type AppHeaderProps = {
    */
   leftContent?: React.ReactNode
   /**
-   * Whether to show search box
-   * @default true
-   */
-  showSearch?: boolean
-  /**
    * Custom right content, overrides default right content if provided
    */
   rightContent?: React.ReactNode
@@ -91,7 +84,6 @@ export function AppHeader({
   navLinks = defaultTopNavLinks,
   showTopNav = true,
   leftContent,
-  showSearch = true,
   rightContent,
   showNotifications = true,
   showConfigDrawer = true,
@@ -105,15 +97,12 @@ export function AppHeader({
 
   return (
     <Header>
-      <SystemBrand variant='inline' />
-
       {leftContent ? (
         <div className='ms-2 flex items-center'>{leftContent}</div>
       ) : null}
 
       {rightContent ?? (
         <div className='ms-auto flex items-center gap-1 sm:gap-2'>
-          {showSearch && <Search />}
           {showTopNav && (
             <div className='me-1 hidden lg:block'>
               <TopNav links={links} />
