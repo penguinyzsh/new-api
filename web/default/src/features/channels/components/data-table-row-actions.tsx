@@ -155,11 +155,13 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
     }
   }
 
-  let statusIcon = <Power className='size-4' />
+  let statusIcon = <Power aria-hidden='true' className='size-4' />
   if (isTogglingStatus) {
-    statusIcon = <Loader2 className='size-4 animate-spin' />
+    statusIcon = (
+      <Loader2 aria-hidden='true' className='size-4 animate-spin' />
+    )
   } else if (isEnabled) {
-    statusIcon = <PowerOff className='size-4' />
+    statusIcon = <PowerOff aria-hidden='true' className='size-4' />
   }
 
   return (

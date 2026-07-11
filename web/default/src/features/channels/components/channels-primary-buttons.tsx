@@ -114,7 +114,7 @@ export function ChannelsPrimaryButtons() {
             onPressedChange={handleBatchModeToggle}
             aria-label={t('Batch Operations')}
           >
-            <ListChecks />
+            <ListChecks aria-hidden='true' />
             {t('Batch Operations')}
           </Toggle>
 
@@ -124,7 +124,7 @@ export function ChannelsPrimaryButtons() {
             onPressedChange={handleTagModeToggle}
             aria-label={t('Tag Mode')}
           >
-            <Tags />
+            <Tags aria-hidden='true' />
             {t('Tag Mode')}
           </Toggle>
 
@@ -134,7 +134,7 @@ export function ChannelsPrimaryButtons() {
             onPressedChange={handleIdSortToggle}
             aria-label={t('Sort by ID')}
           >
-            <SortAsc />
+            <SortAsc aria-hidden='true' />
             {t('Sort by ID')}
           </Toggle>
         </div>
