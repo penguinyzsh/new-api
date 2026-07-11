@@ -65,7 +65,7 @@ export function AuthDialog(props: AuthDialogProps) {
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className='auth-dialog-light max-h-[calc(100svh-2rem)] overflow-y-auto border-0 bg-white p-0 text-neutral-950 shadow-2xl ring-1 ring-black/10 sm:max-w-4xl'>
+      <DialogContent className='bg-background text-foreground ring-border max-h-[calc(100svh-2rem)] overflow-y-auto border-0 p-0 shadow-2xl ring-1 sm:max-w-4xl'>
         <DialogHeader className='sr-only'>
           <DialogTitle>
             {isSignIn ? t('Sign in') : t('Create an account')}
@@ -84,7 +84,7 @@ export function AuthDialog(props: AuthDialogProps) {
             {canRegister && (
               <nav
                 aria-label={t('Authentication')}
-                className='grid grid-cols-2 rounded-lg bg-neutral-100 p-1'
+                className='bg-muted grid grid-cols-2 rounded-lg p-1'
               >
                 <button
                   type='button'
@@ -93,8 +93,8 @@ export function AuthDialog(props: AuthDialogProps) {
                   className={cn(
                     'rounded-md px-3 py-2 text-center text-sm font-medium transition-colors',
                     isSignIn
-                      ? 'bg-white text-neutral-950 shadow-sm'
-                      : 'text-neutral-500 hover:text-neutral-950'
+                      ? 'bg-background text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
                   {t('Sign in')}
@@ -106,8 +106,8 @@ export function AuthDialog(props: AuthDialogProps) {
                   className={cn(
                     'rounded-md px-3 py-2 text-center text-sm font-medium transition-colors',
                     isSignIn
-                      ? 'text-neutral-500 hover:text-neutral-950'
-                      : 'bg-white text-neutral-950 shadow-sm'
+                      ? 'text-muted-foreground hover:text-foreground'
+                      : 'bg-background text-foreground shadow-sm'
                   )}
                 >
                   {t('Sign up')}

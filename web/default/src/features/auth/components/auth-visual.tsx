@@ -32,7 +32,7 @@ export function AuthVisual(props: AuthVisualProps) {
     <div className='relative hidden min-h-[560px] md:block'>
       <div
         aria-hidden='true'
-        className='absolute inset-y-8 left-0 w-px bg-neutral-200'
+        className='bg-border absolute inset-y-8 left-0 w-px'
       />
       <div className='absolute inset-y-0 right-0 left-6 overflow-hidden'>
         <img

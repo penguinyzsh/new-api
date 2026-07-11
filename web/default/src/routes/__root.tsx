@@ -50,7 +50,7 @@ function RootComponent() {
     <ThemeCustomizationProvider>
       <NavigationProgress />
       <Outlet />
-      <Toaster closeButton duration={5000} position='top-center' richColors />
+      <Toaster duration={5000} position='bottom-right' richColors />
       {import.meta.env.MODE === 'development' && (
         <>
           <ReactQueryDevtools buttonPosition='bottom-left' />

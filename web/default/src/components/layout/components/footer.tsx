@@ -232,7 +232,7 @@ export function Footer(props: FooterProps) {
           props.className
         )}
       >
-        <div className='mx-auto w-full max-w-6xl px-6 py-5'>
+        <div className='mx-auto w-full max-w-none px-6 py-5'>
           <div className='bg-muted/20 border-border/50 flex flex-col items-center justify-between gap-4 rounded-2xl border px-4 py-4 backdrop-blur-sm sm:flex-row sm:px-5'>
             <div
               className='custom-footer text-muted-foreground min-w-0 text-center text-sm sm:text-left'
@@ -258,7 +258,7 @@ export function Footer(props: FooterProps) {
     >
       <div
         className={cn(
-          'mx-auto max-w-6xl px-6 py-12 md:py-16',
+          'mx-auto w-full max-w-none px-6 py-12 md:py-16',
           props.seamless && 'py-6 md:py-10'
         )}
       >
