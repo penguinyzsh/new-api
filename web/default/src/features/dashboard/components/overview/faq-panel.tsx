@@ -53,7 +53,7 @@ export function FAQPanel() {
       variant='bare'
     >
       <ScrollArea className='h-80'>
-        <Accordion className='w-full px-4 sm:px-5'>
+        <Accordion className='w-full'>
           {list.map((item: FAQItem, idx: number) => {
             const key = item.id ?? `faq-${idx}`
             const value = `item-${key}`
