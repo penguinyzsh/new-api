@@ -21,12 +21,15 @@ import { useTranslation } from 'react-i18next'
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { useSystemConfig } from '@/hooks/use-system-config'
+import { cn } from '@/lib/utils'
 
 type AuthLayoutProps = {
   children: React.ReactNode
+  className?: string
+  contentClassName?: string
 }
 
-export function AuthLayout({ children }: AuthLayoutProps) {
+export function AuthLayout(props: AuthLayoutProps) {
   const { t } = useTranslation()
   const { systemName, logo, loading } = useSystemConfig()
 
@@ -53,9 +56,19 @@ export function AuthLayout({ children }: AuthLayoutProps) {
           <h1 className='text-xl font-medium'>{systemName}</h1>
         )}
       </Link>
-      <div className='container flex items-center pt-16 sm:pt-0'>
-        <div className='mx-auto flex w-full flex-col justify-center space-y-2 px-4 py-8 sm:w-[480px] sm:p-8'>
-          {children}
+      <div
+        className={cn(
+          'flex w-full items-center pt-16 sm:pt-0',
+          props.className
+        )}
+      >
+        <div
+          className={cn(
+            'mx-auto flex w-full flex-col justify-center gap-2 px-4 py-8 sm:w-[480px] sm:p-8',
+            props.contentClassName
+          )}
+        >
+          {props.children}
         </div>
       </div>
     </div>
