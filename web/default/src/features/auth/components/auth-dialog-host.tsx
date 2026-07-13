@@ -16,9 +16,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { lazy, Suspense, useEffect, useState } from 'react'
+
 import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 
-import { AuthDialog } from './auth-dialog'
+import { loadAuthDialog } from './auth-dialog-loader'
+
+const LazyAuthDialog = lazy(loadAuthDialog)
 
 export function AuthDialogHost() {
   const open = useAuthDialogStore((state) => state.isOpen)
@@ -26,18 +30,31 @@ export function AuthDialogHost() {
   const redirectTo = useAuthDialogStore((state) => state.redirectTo)
   const closeDialog = useAuthDialogStore((state) => state.closeDialog)
   const setMode = useAuthDialogStore((state) => state.setMode)
+  const [hasOpened, setHasOpened] = useState(open)
+
+  useEffect(() => {
+    if (open) {
+      setHasOpened(true)
+    }
+  }, [open])
+
+  if (!open && !hasOpened) {
+    return null
+  }
 
   return (
-    <AuthDialog
-      open={open}
-      mode={mode}
-      redirectTo={redirectTo}
-      onModeChange={setMode}
-      onOpenChange={(nextOpen) => {
-        if (!nextOpen) {
-          closeDialog()
-        }
-      }}
-    />
+    <Suspense fallback={null}>
+      <LazyAuthDialog
+        open={open}
+        mode={mode}
+        redirectTo={redirectTo}
+        onModeChange={setMode}
+        onOpenChange={(nextOpen) => {
+          if (!nextOpen) {
+            closeDialog()
+          }
+        }}
+      />
+    </Suspense>
   )
 }

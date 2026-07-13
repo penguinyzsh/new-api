@@ -99,10 +99,7 @@ export function AuthDialog(props: AuthDialogProps) {
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent
-        keepMounted
-        className='bg-background text-foreground ring-border max-h-[calc(100svh-2rem)] overflow-y-auto border-0 p-0 shadow-2xl ring-1 duration-150 motion-reduce:animate-none sm:max-w-[55rem]'
-      >
+      <DialogContent className='bg-background text-foreground ring-border max-h-[calc(100svh-2rem)] overflow-y-auto border-0 p-0 shadow-2xl ring-1 duration-150 motion-reduce:animate-none sm:max-w-[55rem]'>
         <DialogHeader className='sr-only'>
           <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogDescription>{dialogDescription}</DialogDescription>

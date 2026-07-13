@@ -97,21 +97,38 @@ export function useAuthRedirect() {
   /**
    * Redirect to 2FA page
    */
-  const redirectTo2FA = () => {
+  const redirectTo2FA = (): void => {
+    useAuthDialogStore.getState().closeDialog()
     navigate({ to: '/otp', replace: true })
   }
 
-  /**
-   * Redirect to login page
-   */
-  const redirectToLogin = () => {
+  const openLoginDialog = (): void => {
     const authDialog = useAuthDialogStore.getState()
     authDialog.openDialog('sign-in', authDialog.redirectTo)
+  }
+
+  /**
+   * Redirect to the home page and open the login dialog
+   */
+  const redirectToLogin = (): void => {
+    openLoginDialog()
+    navigate({ to: '/', replace: true })
+  }
+
+  /**
+   * Complete login after the two-factor verification page
+   */
+  const completeTwoFactorLogin = async (
+    userData?: { id?: number } | null
+  ): Promise<void> => {
+    await handleLoginSuccess(userData, useAuthDialogStore.getState().redirectTo)
   }
 
   return {
     handleLoginSuccess,
     redirectTo2FA,
     redirectToLogin,
+    openLoginDialog,
+    completeTwoFactorLogin,
   }
 }
