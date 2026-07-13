@@ -21,6 +21,7 @@ import { Construction } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { PublicLayout } from '@/components/layout'
+import { PageTransition } from '@/components/page-transition'
 import { RichContent } from '@/components/rich-content'
 import { Skeleton } from '@/components/ui/skeleton'
 import { isHttpUrl, isLikelyHtml } from '@/lib/content-format'
@@ -127,12 +128,12 @@ export function About() {
   if (isLoading) {
     return (
       <PublicLayout>
-        <div className='mx-auto flex max-w-4xl flex-col gap-4 py-12'>
+        <PageTransition className='mx-auto flex max-w-4xl flex-col gap-4 py-12'>
           <Skeleton className='h-8 w-[45%]' />
           <Skeleton className='h-4 w-full' />
           <Skeleton className='h-4 w-[90%]' />
           <Skeleton className='h-4 w-[80%]' />
-        </div>
+        </PageTransition>
       </PublicLayout>
     )
   }
@@ -140,7 +141,9 @@ export function About() {
   if (!hasContent) {
     return (
       <PublicLayout>
-        <EmptyAboutState />
+        <PageTransition>
+          <EmptyAboutState />
+        </PageTransition>
       </PublicLayout>
     )
   }
@@ -148,12 +151,14 @@ export function About() {
   if (isUrl) {
     return (
       <PublicLayout showMainContainer={false}>
-        <iframe
-          src={rawContent}
-          className='h-[calc(100vh-3.5rem)] w-full border-0'
-          title={t('About')}
-          sandbox='allow-forms allow-popups allow-popups-to-escape-sandbox allow-scripts'
-        />
+        <PageTransition className='h-[calc(100vh-3.5rem)] w-full'>
+          <iframe
+            src={rawContent}
+            className='size-full border-0'
+            title={t('About')}
+            sandbox='allow-forms allow-popups allow-popups-to-escape-sandbox allow-scripts'
+          />
+        </PageTransition>
       </PublicLayout>
     )
   }
@@ -161,25 +166,27 @@ export function About() {
   if (contentIsHtml) {
     return (
       <PublicLayout showMainContainer={false}>
-        <RichContent
-          mode='html'
-          htmlVariant='isolated'
-          content={rawContent}
-          className='prose-neutral dark:prose-invert max-w-none'
-        />
+        <PageTransition>
+          <RichContent
+            mode='html'
+            htmlVariant='isolated'
+            content={rawContent}
+            className='prose-neutral dark:prose-invert max-w-none'
+          />
+        </PageTransition>
       </PublicLayout>
     )
   }
 
   return (
     <PublicLayout>
-      <div className='mx-auto max-w-6xl px-4 py-8'>
+      <PageTransition className='mx-auto max-w-6xl px-4 py-8'>
         <RichContent
           mode='markdown'
           content={rawContent}
           className='prose-neutral dark:prose-invert max-w-none'
         />
-      </div>
+      </PageTransition>
     </PublicLayout>
   )
 }
