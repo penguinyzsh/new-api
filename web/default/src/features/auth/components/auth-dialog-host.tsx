@@ -16,27 +16,28 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { z } from 'zod'
-
 import { useAuthDialogStore } from '@/stores/auth-dialog-store'
-import { useAuthStore } from '@/stores/auth-store'
 
-const searchSchema = z.object({
-  redirect: z.string().optional(),
-})
+import { AuthDialog } from './auth-dialog'
 
-export const Route = createFileRoute('/(auth)/sign-in')({
-  validateSearch: searchSchema,
-  beforeLoad: ({ cause, search }) => {
-    if (cause === 'preload') return
+export function AuthDialogHost() {
+  const open = useAuthDialogStore((state) => state.isOpen)
+  const mode = useAuthDialogStore((state) => state.mode)
+  const redirectTo = useAuthDialogStore((state) => state.redirectTo)
+  const closeDialog = useAuthDialogStore((state) => state.closeDialog)
+  const setMode = useAuthDialogStore((state) => state.setMode)
 
-    const { auth } = useAuthStore.getState()
-    if (auth.user) {
-      throw redirect({ to: search.redirect || '/dashboard' })
-    }
-
-    useAuthDialogStore.getState().openDialog('sign-in', search.redirect)
-    throw redirect({ to: '/', replace: true })
-  },
-})
+  return (
+    <AuthDialog
+      open={open}
+      mode={mode}
+      redirectTo={redirectTo}
+      onModeChange={setMode}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) {
+          closeDialog()
+        }
+      }}
+    />
+  )
+}

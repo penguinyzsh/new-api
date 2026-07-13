@@ -16,27 +16,25 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { z } from 'zod'
+import { create } from 'zustand'
 
-import { useAuthDialogStore } from '@/stores/auth-dialog-store'
-import { useAuthStore } from '@/stores/auth-store'
+export type AuthMode = 'forgot-password' | 'sign-in' | 'sign-up'
 
-const searchSchema = z.object({
-  redirect: z.string().optional(),
-})
+type AuthDialogState = {
+  isOpen: boolean
+  mode: AuthMode
+  redirectTo?: string
+  openDialog: (mode?: AuthMode, redirectTo?: string) => void
+  closeDialog: () => void
+  setMode: (mode: AuthMode) => void
+}
 
-export const Route = createFileRoute('/(auth)/sign-in')({
-  validateSearch: searchSchema,
-  beforeLoad: ({ cause, search }) => {
-    if (cause === 'preload') return
-
-    const { auth } = useAuthStore.getState()
-    if (auth.user) {
-      throw redirect({ to: search.redirect || '/dashboard' })
-    }
-
-    useAuthDialogStore.getState().openDialog('sign-in', search.redirect)
-    throw redirect({ to: '/', replace: true })
-  },
-})
+export const useAuthDialogStore = create<AuthDialogState>()((set) => ({
+  isOpen: false,
+  mode: 'sign-in',
+  redirectTo: undefined,
+  openDialog: (mode = 'sign-in', redirectTo) =>
+    set({ isOpen: true, mode, redirectTo }),
+  closeDialog: () => set({ isOpen: false }),
+  setMode: (mode) => set({ mode }),
+}))

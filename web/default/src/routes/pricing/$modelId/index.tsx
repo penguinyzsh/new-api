@@ -21,6 +21,7 @@ import z from 'zod'
 
 import { ModelDetails } from '@/features/pricing/components/model-details'
 import { getFreshModuleAccess } from '@/lib/nav-modules'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 import { useAuthStore } from '@/stores/auth-store'
 
 const modelDetailsSearchSchema = z.object({
@@ -38,7 +39,7 @@ const modelDetailsSearchSchema = z.object({
 
 export const Route = createFileRoute('/pricing/$modelId/')({
   validateSearch: modelDetailsSearchSchema,
-  beforeLoad: async ({ location }) => {
+  beforeLoad: async ({ cause, location }) => {
     const access = await getFreshModuleAccess('pricing')
     if (!access.enabled) {
       throw redirect({ to: '/' })
@@ -46,10 +47,9 @@ export const Route = createFileRoute('/pricing/$modelId/')({
     if (access.requireAuth) {
       const { auth } = useAuthStore.getState()
       if (!auth.user) {
-        throw redirect({
-          to: '/sign-in',
-          search: { redirect: location.href },
-        })
+        if (cause === 'preload') return
+        useAuthDialogStore.getState().openDialog('sign-in', location.href)
+        throw redirect({ to: '/' })
       }
     }
   },

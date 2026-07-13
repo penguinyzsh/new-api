@@ -21,6 +21,7 @@ import i18n from 'i18next'
 
 import type { User } from '@/features/users/types'
 import { getSelf } from '@/lib/api'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 import { useAuthStore } from '@/stores/auth-store'
 
 import { saveUserId } from '../lib/storage'
@@ -89,6 +90,7 @@ export function useAuthRedirect() {
 
     // Navigate to target page
     const targetPath = redirectTo || '/dashboard'
+    useAuthDialogStore.getState().closeDialog()
     navigate({ to: targetPath, replace: true })
   }
 
@@ -103,20 +105,13 @@ export function useAuthRedirect() {
    * Redirect to login page
    */
   const redirectToLogin = () => {
-    navigate({ to: '/sign-in', replace: true })
-  }
-
-  /**
-   * Redirect to register page
-   */
-  const redirectToRegister = () => {
-    navigate({ to: '/sign-up', replace: true })
+    const authDialog = useAuthDialogStore.getState()
+    authDialog.openDialog('sign-in', authDialog.redirectTo)
   }
 
   return {
     handleLoginSuccess,
     redirectTo2FA,
     redirectToLogin,
-    redirectToRegister,
   }
 }

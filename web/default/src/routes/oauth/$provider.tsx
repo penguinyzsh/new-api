@@ -30,6 +30,7 @@ import { toast } from 'sonner'
 import { OAuthCallbackScreen } from '@/features/auth/components/oauth-callback-screen'
 import { OAUTH_BIND_STORAGE_KEY } from '@/features/auth/constants'
 import { api, getSelf } from '@/lib/api'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 import { useAuthStore, type AuthUser } from '@/stores/auth-store'
 
 type OAuthRequestConfig = AxiosRequestConfig & {
@@ -78,9 +79,14 @@ function OAuthCallback() {
         }
       }
 
+      const returnToLogin = () => {
+        useAuthDialogStore.getState().openDialog('sign-in', search?.redirect)
+        safeNavigate('/')
+      }
+
       if (!search?.code) {
         toast.error(i18next.t('Missing code'))
-        safeNavigate('/sign-in')
+        returnToLogin()
         return
       }
       const isBindingFlow =
@@ -160,7 +166,7 @@ function OAuthCallback() {
           return
         }
         toast.error(message)
-        safeNavigate('/sign-in')
+        returnToLogin()
       }
 
       try {
@@ -202,7 +208,7 @@ function OAuthCallback() {
             return
           }
           toast.error(res?.data?.message || i18next.t('OAuth failed'))
-          safeNavigate('/sign-in')
+          returnToLogin()
           return
         }
         const message = res?.data?.message || 'OAuth failed'

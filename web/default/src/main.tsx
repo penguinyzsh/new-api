@@ -35,6 +35,7 @@ import { applyFaviconToDom } from '@/lib/dom-utils'
 import '@/lib/dayjs'
 import { initializeFrontendCache } from '@/lib/frontend-cache'
 import { handleServerError } from '@/lib/handle-server-error'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 import { useAuthStore } from '@/stores/auth-store'
 
 import { DirectionProvider } from './context/direction-provider'
@@ -89,7 +90,8 @@ const queryClient = new QueryClient({
           toast.error(i18next.t('Session expired!'))
           useAuthStore.getState().auth.reset()
           const redirect = `${router.history.location.href}`
-          router.navigate({ to: '/sign-in', search: { redirect } })
+          useAuthDialogStore.getState().openDialog('sign-in', redirect)
+          router.navigate({ to: '/' })
         }
         if (error.response?.status === 500) {
           toast.error(i18next.t('Internal Server Error!'))

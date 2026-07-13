@@ -55,11 +55,16 @@ import {
 } from '@/lib/passkey'
 import { cn } from '@/lib/utils'
 
+type UserAuthFormProps = AuthFormProps & {
+  onForgotPassword: () => void
+}
+
 export function UserAuthForm({
   className,
   redirectTo,
+  onForgotPassword,
   ...props
-}: AuthFormProps) {
+}: UserAuthFormProps) {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [wechatCode, setWeChatCode] = useState('')
@@ -365,6 +370,20 @@ export function UserAuthForm({
                   <FormMessage />
                   <Link
                     to='/forgot-password'
+                    onClick={(event) => {
+                      if (
+                        event.button !== 0 ||
+                        event.metaKey ||
+                        event.ctrlKey ||
+                        event.shiftKey ||
+                        event.altKey
+                      ) {
+                        return
+                      }
+
+                      event.preventDefault()
+                      onForgotPassword()
+                    }}
                     className='text-muted-foreground absolute end-0 -top-0.5 z-10 text-sm font-medium hover:opacity-75'
                   >
                     {t('Forgot password?')}

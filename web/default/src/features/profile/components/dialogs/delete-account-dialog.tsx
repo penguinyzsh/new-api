@@ -28,6 +28,7 @@ import { Dialog } from '@/components/dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Label } from '@/components/ui/label'
 import { api } from '@/lib/api'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 import { useAuthStore } from '@/stores/auth-store'
 
 import { deleteUserAccount } from '../../api'
@@ -75,7 +76,8 @@ export function DeleteAccountDialog({
 
         reset()
         localStorage.removeItem('user')
-        navigate({ to: '/sign-in' })
+        useAuthDialogStore.getState().openDialog('sign-in')
+        navigate({ to: '/' })
       } else {
         toast.error(response.message || t('Failed to delete account'))
       }

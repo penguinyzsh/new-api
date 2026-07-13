@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useState, type FocusEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -27,14 +28,15 @@ import {
   DialogTitle,
 } from '@/components/design-system/dialog'
 import { useStatus } from '@/hooks/use-status'
+import { MOTION_TRANSITION, MOTION_VARIANTS } from '@/lib/motion'
 import { cn } from '@/lib/utils'
+import type { AuthMode } from '@/stores/auth-dialog-store'
 
+import { ForgotPasswordContent } from '../forgot-password'
 import { UserAuthForm } from '../sign-in/components/user-auth-form'
 import { SignUpForm } from '../sign-up/components/sign-up-form'
 import { AuthVisual } from './auth-visual'
 import { TermsFooter } from './terms-footer'
-
-export type AuthMode = 'sign-in' | 'sign-up'
 
 type AuthDialogProps = {
   mode: AuthMode
@@ -47,11 +49,26 @@ type AuthDialogProps = {
 export function AuthDialog(props: AuthDialogProps) {
   const { t } = useTranslation()
   const { status } = useStatus()
+  const shouldReduceMotion = useReducedMotion()
   const [privacyMode, setPrivacyMode] = useState(false)
   const canRegister =
     !status?.self_use_mode_enabled && status?.register_enabled !== false
-  const mode = canRegister ? props.mode : 'sign-in'
+  const mode = !canRegister && props.mode === 'sign-up' ? 'sign-in' : props.mode
+  const isForgotPassword = mode === 'forgot-password'
   const isSignIn = mode === 'sign-in'
+  const isSignInSection = isSignIn || isForgotPassword
+
+  let dialogTitle = t('Create an account')
+  let dialogDescription = t('Sign up')
+  if (isSignIn) {
+    dialogTitle = t('Sign in')
+    dialogDescription = t('Sign in')
+  } else if (isForgotPassword) {
+    dialogTitle = t('Forgot password')
+    dialogDescription = t(
+      'Enter your registered email and we will send you a link to reset your password.'
+    )
+  }
 
   const handleFocusCapture = (event: FocusEvent<HTMLDivElement>) => {
     setPrivacyMode(Boolean(event.target.closest('[data-sensitive-field]')))
@@ -63,20 +80,36 @@ export function AuthDialog(props: AuthDialogProps) {
     }
   }
 
+  let formContent = <SignUpForm className='flex flex-1 flex-col' />
+  if (isSignIn) {
+    formContent = (
+      <UserAuthForm
+        className='flex flex-1 flex-col'
+        redirectTo={props.redirectTo}
+        onForgotPassword={() => props.onModeChange('forgot-password')}
+      />
+    )
+  } else if (isForgotPassword) {
+    formContent = (
+      <ForgotPasswordContent
+        onBackToSignIn={() => props.onModeChange('sign-in')}
+      />
+    )
+  }
+
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className='bg-background text-foreground ring-border data-open:slide-in-from-bottom-3 data-closed:slide-out-to-bottom-2 max-h-[calc(100svh-2rem)] overflow-y-auto border-0 p-0 shadow-2xl ring-1 duration-200 ease-out data-closed:ease-in motion-reduce:animate-none sm:max-w-4xl'>
+      <DialogContent
+        keepMounted
+        className='bg-background text-foreground ring-border max-h-[calc(100svh-2rem)] overflow-y-auto border-0 p-0 shadow-2xl ring-1 duration-150 motion-reduce:animate-none sm:max-w-[55rem]'
+      >
         <DialogHeader className='sr-only'>
-          <DialogTitle>
-            {isSignIn ? t('Sign in') : t('Create an account')}
-          </DialogTitle>
-          <DialogDescription>
-            {isSignIn ? t('Sign in') : t('Sign up')}
-          </DialogDescription>
+          <DialogTitle>{dialogTitle}</DialogTitle>
+          <DialogDescription>{dialogDescription}</DialogDescription>
         </DialogHeader>
 
         <div
-          className='grid min-h-[560px] md:grid-cols-[1.05fr_0.95fr]'
+          className='grid min-h-[560px] md:grid-cols-[minmax(0,1fr)_25rem]'
           onFocusCapture={handleFocusCapture}
           onBlurCapture={handleBlurCapture}
         >
@@ -88,11 +121,11 @@ export function AuthDialog(props: AuthDialogProps) {
               >
                 <button
                   type='button'
-                  aria-current={isSignIn ? 'page' : undefined}
+                  aria-current={isSignInSection ? 'page' : undefined}
                   onClick={() => props.onModeChange('sign-in')}
                   className={cn(
                     'rounded-md px-3 py-2 text-center text-sm font-medium transition-colors',
-                    isSignIn
+                    isSignInSection
                       ? 'bg-background text-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground'
                   )}
@@ -101,11 +134,11 @@ export function AuthDialog(props: AuthDialogProps) {
                 </button>
                 <button
                   type='button'
-                  aria-current={isSignIn ? undefined : 'page'}
+                  aria-current={isSignInSection ? undefined : 'page'}
                   onClick={() => props.onModeChange('sign-up')}
                   className={cn(
                     'rounded-md px-3 py-2 text-center text-sm font-medium transition-colors',
-                    isSignIn
+                    isSignInSection
                       ? 'text-muted-foreground hover:text-foreground'
                       : 'bg-background text-foreground shadow-sm'
                   )}
@@ -115,24 +148,31 @@ export function AuthDialog(props: AuthDialogProps) {
               </nav>
             )}
 
-            <div
-              key={mode}
-              className='animate-in fade-in-0 slide-in-from-right-2 flex flex-1 flex-col duration-200 motion-reduce:animate-none'
-            >
-              {isSignIn ? (
-                <UserAuthForm
-                  className='flex flex-1 flex-col'
-                  redirectTo={props.redirectTo}
-                />
-              ) : (
-                <SignUpForm className='flex flex-1 flex-col' />
-              )}
+            <div className='grid flex-1'>
+              <AnimatePresence mode='wait' initial={false}>
+                <motion.div
+                  key={mode}
+                  initial={
+                    shouldReduceMotion ? false : MOTION_VARIANTS.fadeIn.initial
+                  }
+                  animate={MOTION_VARIANTS.fadeIn.animate}
+                  exit={
+                    shouldReduceMotion ? undefined : MOTION_VARIANTS.fadeIn.exit
+                  }
+                  transition={MOTION_TRANSITION.fast}
+                  className='col-start-1 row-start-1 flex min-w-0 flex-col'
+                >
+                  {formContent}
 
-              <TermsFooter
-                variant={mode}
-                status={status}
-                className='mt-6 text-center'
-              />
+                  {!isForgotPassword && (
+                    <TermsFooter
+                      variant={mode}
+                      status={status}
+                      className='mt-6 text-center'
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
 

@@ -27,6 +27,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import useDialogState from '@/hooks/use-dialog'
 import { useUserDisplay } from '@/hooks/use-user-display'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 import type { AuthUser } from '@/stores/auth-store'
 
 import { MOBILE_DRAWER_ANIMATION, MOBILE_DRAWER_CONFIG } from '../constants'
@@ -156,12 +157,21 @@ interface MobileSignInButtonProps {
 
 function MobileSignInButton({ onNavigate }: MobileSignInButtonProps) {
   const { t } = useTranslation()
+  const openAuthDialog = useAuthDialogStore((state) => state.openDialog)
   return (
     <Button
       nativeButton={false}
       variant='secondary'
       className='w-full'
-      render={<Link to='/sign-in' onClick={onNavigate} />}
+      render={
+        <Link
+          to='/'
+          onClick={() => {
+            onNavigate?.()
+            openAuthDialog('sign-in')
+          }}
+        />
+      }
     >
       {t('Sign in')}
     </Button>
@@ -261,9 +271,9 @@ export function MobileDrawer({
                   </div>
                 ) : (
                   <AnimatePresence>
-                    {mobileLinksList.map((link, index) => (
+                    {mobileLinksList.map((link) => (
                       <motion.div
-                        key={`${link.href}-${index}`}
+                        key={`${link.href}-${link.title}`}
                         className='border-border border-b p-2.5 last:border-b-0'
                         variants={MOBILE_DRAWER_ANIMATION.menuItem as Variants}
                       >

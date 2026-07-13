@@ -20,20 +20,23 @@ import { createFileRoute, redirect } from '@tanstack/react-router'
 
 import { AuthenticatedLayout } from '@/components/layout'
 import { getSelf } from '@/lib/api'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 import { useAuthStore } from '@/stores/auth-store'
 
 // 内存中的验证标记，避免同一会话中重复验证
 let sessionVerified = false
 
 export const Route = createFileRoute('/_authenticated')({
-  beforeLoad: async ({ location }) => {
+  beforeLoad: async ({ cause, location }) => {
+    if (cause === 'preload') return
+
     const { auth } = useAuthStore.getState()
 
     // 如果本地没有用户信息，直接跳转登录页
     if (!auth.user) {
+      useAuthDialogStore.getState().openDialog('sign-in', location.href)
       throw redirect({
-        to: '/sign-in',
-        search: { redirect: location.href },
+        to: '/',
       })
     }
 
@@ -52,9 +55,9 @@ export const Route = createFileRoute('/_authenticated')({
       } else if (res) {
         // 验证失败，清除本地缓存并跳转登录页
         auth.reset()
+        useAuthDialogStore.getState().openDialog('sign-in', location.href)
         throw redirect({
-          to: '/sign-in',
-          search: { redirect: location.href },
+          to: '/',
         })
       }
     }

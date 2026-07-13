@@ -17,12 +17,20 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { createFileRoute, redirect } from '@tanstack/react-router'
+import { z } from 'zod'
+
+const searchSchema = z.object({
+  aff: z.string().optional(),
+})
 
 export const Route = createFileRoute('/(auth)/register')({
-  beforeLoad: ({ location }) => {
+  validateSearch: searchSchema,
+  beforeLoad: ({ cause, search }) => {
+    if (cause === 'preload') return
+
     throw redirect({
       to: '/sign-up',
-      search: location.search,
+      search: { aff: search.aff },
       replace: true,
     })
   },

@@ -29,6 +29,7 @@ import { Label } from '@/components/ui/label'
 import { useCountdown } from '@/hooks/use-countdown'
 import { api } from '@/lib/api'
 import { copyToClipboard } from '@/lib/copy-to-clipboard'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 
 import { AuthLayout } from '../auth-layout'
 
@@ -45,6 +46,7 @@ export function ResetPasswordConfirm({
 }: ResetPasswordConfirmProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const openAuthDialog = useAuthDialogStore((state) => state.openDialog)
   const [newPassword, setNewPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -55,6 +57,11 @@ export function ResetPasswordConfirm({
   } = useCountdown({ initialSeconds: 30 })
 
   const isValidResetLink = Boolean(email && token)
+
+  const returnToLogin = () => {
+    openAuthDialog('sign-in')
+    navigate({ to: '/', replace: true })
+  }
 
   async function handleSubmit() {
     if (!isValidResetLink || !email || !token) {
@@ -103,6 +110,15 @@ export function ResetPasswordConfirm({
       )
       setTimeout(() => setCopied(false), 2000)
     }
+  }
+
+  let submitButtonLabel = t('auth.resetPasswordConfirm.confirm')
+  if (newPassword) {
+    submitButtonLabel = t('auth.resetPasswordConfirm.backToLogin')
+  } else if (isActive) {
+    submitButtonLabel = t('auth.resetPasswordConfirm.retry', {
+      seconds: secondsLeft,
+    })
   }
 
   return (
@@ -171,30 +187,16 @@ export function ResetPasswordConfirm({
           <Button
             size='xl'
             className='w-full'
-            onClick={
-              newPassword
-                ? () => navigate({ to: '/sign-in', replace: true })
-                : handleSubmit
-            }
+            onClick={newPassword ? returnToLogin : handleSubmit}
             disabled={
               newPassword ? false : loading || isActive || !isValidResetLink
             }
           >
-            {newPassword
-              ? t('auth.resetPasswordConfirm.backToLogin')
-              : isActive
-                ? t('auth.resetPasswordConfirm.retry', {
-                    seconds: secondsLeft,
-                  })
-                : t('auth.resetPasswordConfirm.confirm')}
+            {submitButtonLabel}
           </Button>
 
           {!newPassword && (
-            <Button
-              variant='link'
-              className='w-full'
-              onClick={() => navigate({ to: '/sign-in', replace: true })}
-            >
+            <Button variant='link' className='w-full' onClick={returnToLogin}>
               {t('Back to login')}
             </Button>
           )}

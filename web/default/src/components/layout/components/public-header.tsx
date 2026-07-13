@@ -16,37 +16,24 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
-import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
+import { Link, useRouterState } from '@tanstack/react-router'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/design-system/button'
-import { Dialog } from '@/components/dialog'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { NotificationPopover } from '@/components/notification-popover'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { AuthMode } from '@/features/auth/components/auth-dialog'
 import { useNotifications } from '@/hooks/use-notifications'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { useTopNavLinks } from '@/hooks/use-top-nav-links'
 import { cn } from '@/lib/utils'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 
 import { defaultTopNavLinks } from '../config/top-nav.config'
 import type { TopNavLink } from '../types'
 import { HeaderLogo } from './header-logo'
-
-const AUTH_PROMPT_SECONDS = 5
-const AuthDialog = lazy(() =>
-  import('@/features/auth/components/auth-dialog').then((module) => ({
-    default: module.AuthDialog,
-  }))
-)
-
-type AuthPromptTarget = {
-  title: string
-  href: string
-}
 
 export interface PublicHeaderProps {
   navLinks?: TopNavLink[]
@@ -76,13 +63,8 @@ export function PublicHeader(props: PublicHeaderProps) {
   } = props
 
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [authPromptTarget, setAuthPromptTarget] =
-    useState<AuthPromptTarget | null>(null)
-  const [authPromptSecondsLeft, setAuthPromptSecondsLeft] =
-    useState(AUTH_PROMPT_SECONDS)
   const {
     systemName,
     logo: systemLogo,
@@ -93,25 +75,11 @@ export function PublicHeader(props: PublicHeaderProps) {
   const notifications = useNotifications()
   const routerState = useRouterState()
   const pathname = routerState.location.pathname
-  const locationSearch = routerState.location.search as {
-    auth?: unknown
-    redirect?: unknown
-  }
-  const authDialogMode =
-    pathname === '/' &&
-    (locationSearch.auth === 'sign-in' || locationSearch.auth === 'sign-up')
-      ? locationSearch.auth
-      : null
-  const [authDialogMounted, setAuthDialogMounted] = useState(
-    authDialogMode !== null
-  )
-  const authRedirect =
-    typeof locationSearch.redirect === 'string'
-      ? locationSearch.redirect
-      : undefined
+  const openAuthDialog = useAuthDialogStore((state) => state.openDialog)
 
   const displaySiteName = customSiteName || systemName
-  const links = (dynamicLinks.length > 0 ? dynamicLinks : navLinks).filter(
+  const hasDynamicLinks = dynamicLinks.length > 0
+  const links = (hasDynamicLinks ? dynamicLinks : navLinks).filter(
     (link) => link.href !== '/'
   )
 
@@ -128,60 +96,6 @@ export function PublicHeader(props: PublicHeaderProps) {
       document.body.style.overflow = ''
     }
   }, [mobileOpen])
-
-  useEffect(() => {
-    if (authDialogMode) {
-      setAuthDialogMounted(true)
-    }
-  }, [authDialogMode])
-
-  useEffect(() => {
-    if (!authPromptTarget) return
-
-    const intervalId = window.setInterval(() => {
-      setAuthPromptSecondsLeft((seconds) => Math.max(seconds - 1, 0))
-    }, 1000)
-
-    const timeoutId = window.setTimeout(() => {
-      const redirect = authPromptTarget.href
-      setAuthPromptTarget(null)
-      navigate({
-        to: '/',
-        search: { auth: 'sign-in', redirect },
-      })
-    }, AUTH_PROMPT_SECONDS * 1000)
-
-    return () => {
-      window.clearInterval(intervalId)
-      window.clearTimeout(timeoutId)
-    }
-  }, [authPromptTarget, navigate])
-
-  const closeAuthPrompt = useCallback(() => {
-    setAuthPromptTarget(null)
-    setAuthPromptSecondsLeft(AUTH_PROMPT_SECONDS)
-  }, [])
-
-  const navigateToSignIn = useCallback(() => {
-    const redirect = authPromptTarget?.href || '/'
-    setAuthPromptTarget(null)
-    navigate({ to: '/', search: { auth: 'sign-in', redirect } })
-  }, [authPromptTarget?.href, navigate])
-
-  const closeAuthDialog = useCallback(() => {
-    navigate({ to: '/', search: {}, replace: true })
-  }, [navigate])
-
-  const changeAuthMode = useCallback(
-    (mode: AuthMode) => {
-      navigate({
-        to: '/',
-        search: { auth: mode, redirect: authRedirect },
-        replace: true,
-      })
-    },
-    [authRedirect, navigate]
-  )
 
   let logoContent: React.ReactNode = (
     <HeaderLogo
@@ -210,15 +124,21 @@ export function PublicHeader(props: PublicHeaderProps) {
       }
 
       if (link.requiresAuth) {
+        if (
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        ) {
+          return
+        }
+
         event.preventDefault()
         if (closeMobile) {
           setMobileOpen(false)
         }
-        setAuthPromptSecondsLeft(AUTH_PROMPT_SECONDS)
-        setAuthPromptTarget({
-          title: t(link.title),
-          href: link.href,
-        })
+        openAuthDialog('sign-in', link.href)
         return
       }
 
@@ -226,7 +146,7 @@ export function PublicHeader(props: PublicHeaderProps) {
         setMobileOpen(false)
       }
     },
-    [t]
+    [openAuthDialog]
   )
 
   return (
@@ -265,6 +185,7 @@ export function PublicHeader(props: PublicHeaderProps) {
             <div className='hidden items-center gap-0.5 sm:flex'>
               {links.map((link) => {
                 const isActive = pathname === link.href
+                const title = hasDynamicLinks ? link.title : t(link.title)
                 if (link.external) {
                   return (
                     <a
@@ -280,7 +201,7 @@ export function PublicHeader(props: PublicHeaderProps) {
                         link.disabled && 'pointer-events-none opacity-50'
                       )}
                     >
-                      {t(link.title)}
+                      {title}
                     </a>
                   )
                 }
@@ -298,7 +219,7 @@ export function PublicHeader(props: PublicHeaderProps) {
                       link.disabled && 'pointer-events-none opacity-50'
                     )}
                   >
-                    {t(link.title)}
+                    {title}
                   </Link>
                 )
               })}
@@ -375,6 +296,7 @@ export function PublicHeader(props: PublicHeaderProps) {
           <nav className='flex flex-col gap-1'>
             {links.map((link, i) => {
               const isActive = pathname === link.href
+              const title = hasDynamicLinks ? link.title : t(link.title)
               const linkClassName = cn(
                 'flex items-center gap-3 py-3 text-base font-medium tracking-tight transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
                 mobileOpen
@@ -399,7 +321,7 @@ export function PublicHeader(props: PublicHeaderProps) {
                     className={linkClassName}
                     style={transitionStyle}
                   >
-                    {t(link.title)}
+                    {title}
                   </a>
                 )
               }
@@ -412,58 +334,13 @@ export function PublicHeader(props: PublicHeaderProps) {
                   className={linkClassName}
                   style={transitionStyle}
                 >
-                  {t(link.title)}
+                  {title}
                 </Link>
               )
             })}
           </nav>
         </div>
       </div>
-
-      <Dialog
-        open={!!authPromptTarget}
-        onOpenChange={(open) => {
-          if (!open) {
-            closeAuthPrompt()
-          }
-        }}
-        title={t('Sign in required')}
-        description={t('Please sign in to view {{module}}.', {
-          module: authPromptTarget?.title || '',
-        })}
-        contentClassName='sm:max-w-md'
-        contentHeight='auto'
-        footer={
-          <>
-            <Button variant='outline' onClick={closeAuthPrompt}>
-              {t('Cancel')}
-            </Button>
-            <Button onClick={navigateToSignIn}>{t('Sign in now')}</Button>
-          </>
-        }
-      >
-        <div className='bg-muted/40 text-muted-foreground rounded-lg px-3 py-2 text-sm'>
-          {t('Redirecting to sign in in {{seconds}} seconds.', {
-            seconds: authPromptSecondsLeft,
-          })}
-        </div>
-      </Dialog>
-
-      {authDialogMounted && (
-        <Suspense fallback={null}>
-          <AuthDialog
-            open={authDialogMode !== null}
-            mode={authDialogMode ?? 'sign-in'}
-            redirectTo={authRedirect}
-            onModeChange={changeAuthMode}
-            onOpenChange={(open) => {
-              if (!open) {
-                closeAuthDialog()
-              }
-            }}
-          />
-        </Suspense>
-      )}
     </>
   )
 }

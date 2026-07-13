@@ -23,6 +23,7 @@ import { toast } from 'sonner'
 
 import { wechatLoginByCode } from '@/features/auth/api'
 import { getSelf } from '@/lib/api'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 import { useAuthStore, type AuthUser } from '@/stores/auth-store'
 
 function OAuthComponent() {
@@ -51,7 +52,8 @@ function OAuthComponent() {
         /* empty */
       }
       toast.error(i18next.t('OAuth failed'))
-      navigate({ to: '/sign-in', replace: true })
+      useAuthDialogStore.getState().openDialog('sign-in', search?.redirect)
+      navigate({ to: '/', replace: true })
     })()
   }, [navigate, search])
 

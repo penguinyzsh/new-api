@@ -16,8 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import authBackgroundPassword from '@/assets/auth-background-password.png'
-import authBackground from '@/assets/auth-background.png'
+import authBackgroundPassword from '@/assets/auth-background-password.webp'
+import authBackground from '@/assets/auth-background.webp'
 import { cn } from '@/lib/utils'
 
 type AuthVisualProps = {
@@ -25,7 +25,7 @@ type AuthVisualProps = {
 }
 
 const imageClassName =
-  'pointer-events-none absolute inset-0 size-full -translate-x-2 translate-y-2 select-none object-contain object-bottom transition-opacity duration-150 motion-reduce:transition-none'
+  'pointer-events-none absolute inset-0 size-full select-none object-contain object-right-bottom transition-opacity duration-150 motion-reduce:transition-none'
 
 export function AuthVisual(props: AuthVisualProps) {
   return (
@@ -34,7 +34,7 @@ export function AuthVisual(props: AuthVisualProps) {
         aria-hidden='true'
         className='bg-border absolute inset-y-8 left-0 w-px'
       />
-      <div className='absolute inset-y-0 right-0 left-6 overflow-hidden'>
+      <div className='absolute top-8 right-0 bottom-0 left-6 overflow-hidden'>
         <img
           src={authBackground}
           alt=''

@@ -16,17 +16,26 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { z } from 'zod'
 
+import { saveAffiliateCode } from '@/features/auth/lib/storage'
 import { Home } from '@/features/home'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 
 const searchSchema = z.object({
-  auth: z.enum(['sign-in', 'sign-up']).optional(),
-  redirect: z.string().optional(),
+  aff: z.string().optional(),
 })
 
 export const Route = createFileRoute('/')({
-  component: Home,
   validateSearch: searchSchema,
+  beforeLoad: ({ cause, search }) => {
+    const affiliateCode = search.aff?.trim()
+    if (!affiliateCode || cause === 'preload') return
+
+    saveAffiliateCode(affiliateCode)
+    useAuthDialogStore.getState().openDialog('sign-up')
+    throw redirect({ to: '/', search: {}, replace: true })
+  },
+  component: Home,
 })

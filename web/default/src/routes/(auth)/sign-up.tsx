@@ -17,22 +17,31 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { createFileRoute, redirect } from '@tanstack/react-router'
+import { z } from 'zod'
 
+import { saveAffiliateCode } from '@/features/auth/lib/storage'
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
 import { useAuthStore } from '@/stores/auth-store'
 
-export const Route = createFileRoute('/(auth)/sign-up')({
-  beforeLoad: async () => {
-    const { auth } = useAuthStore.getState()
+const searchSchema = z.object({
+  aff: z.string().optional(),
+})
 
-    // 如果已经有用户信息，说明已登录，注册页对其无意义，跳转到 dashboard
+export const Route = createFileRoute('/(auth)/sign-up')({
+  validateSearch: searchSchema,
+  beforeLoad: ({ cause, search }) => {
+    if (cause === 'preload') return
+
+    const { auth } = useAuthStore.getState()
     if (auth.user) {
       throw redirect({ to: '/dashboard' })
     }
 
-    throw redirect({
-      to: '/',
-      search: { auth: 'sign-up' },
-      replace: true,
-    })
+    const affiliateCode = search.aff?.trim()
+    if (affiliateCode) {
+      saveAffiliateCode(affiliateCode)
+    }
+    useAuthDialogStore.getState().openDialog('sign-up')
+    throw redirect({ to: '/', replace: true })
   },
 })

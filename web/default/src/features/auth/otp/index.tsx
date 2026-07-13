@@ -19,11 +19,14 @@ For commercial licensing, please contact support@quantumnous.com
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
+import { useAuthDialogStore } from '@/stores/auth-dialog-store'
+
 import { AuthLayout } from '../auth-layout'
 import { OtpForm } from './components/otp-form'
 
 export function Otp() {
   const { t } = useTranslation()
+  const openAuthDialog = useAuthDialogStore((state) => state.openDialog)
   return (
     <AuthLayout>
       <div className='w-full space-y-8'>
@@ -37,7 +40,8 @@ export function Otp() {
           <p className='text-muted-foreground text-left text-sm sm:text-base'>
             {t('Session expired?')}{' '}
             <Link
-              to='/sign-in'
+              to='/'
+              onClick={() => openAuthDialog('sign-in')}
               className='hover:text-primary font-medium underline underline-offset-4'
             >
               {t('Re-login')}
